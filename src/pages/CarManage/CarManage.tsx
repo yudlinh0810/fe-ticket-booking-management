@@ -57,6 +57,10 @@ const CarManage: React.FC = () => {
     navigate(newPage > 1 ? `/car-manage/page/${newPage}` : `/car-manage`, { replace: true });
   };
 
+  const handleRedirectDetail = (e: React.MouseEvent<HTMLTableCellElement>, id: number) => {
+    navigate(`/car-manage/detail/${id}`);
+  };
+
   useEffect(() => {
     window.scrollTo(0, 0); // Scroll lên đầu khi chuyển trang
   }, [data]);
@@ -94,7 +98,9 @@ const CarManage: React.FC = () => {
             </div>
           ))}
         </div>
-        <button className={styles.addButton}>Thêm Xe</button>
+        <Link to={"/car-manage/add"} className={styles["btn-add"]}>
+          Thêm Xe
+        </Link>
       </div>
       <div className={styles["table-wrapper"]}>
         <table className={styles.table}>
@@ -123,7 +129,9 @@ const CarManage: React.FC = () => {
           <tbody>
             {carData.map((car, index) => (
               <tr key={index}>
-                <td>{index + 1 + currentPage * ITEMS_PER_PAGE}</td>
+                <td className={styles["car-id"]} onClick={(e) => handleRedirectDetail(e, car.id)}>
+                  {index + 1 + currentPage * ITEMS_PER_PAGE}
+                </td>
                 <td>
                   <img className={styles.img} loading="lazy" src={car.image?.urlImg} alt="" />
                 </td>

@@ -24,17 +24,17 @@ export const dateTimeTransform = (
 
   switch (format) {
     case "DD/MM/YYYY":
-      return `${day}/${month}/${year} ${time === "" ? "" : time}`;
+      return `${time === "" ? "" : time} | ${day}/${month}/${year} `;
     case "MM/DD/YYYY":
-      return `${month}/${day}/${year} ${time === "" ? "" : time}`;
+      return `${time === "" ? "" : time} | ${month}/${day}/${year} `;
     case "YYYY/MM/DD":
-      return `${year}/${month}/${day} ${time === "" ? "" : time}`;
+      return `${time === "" ? "" : time} | ${year}/${month}/${day} `;
     case "DD-MM-YYYY":
-      return `${day}-${month}-${year} ${time === "" ? "" : time}`;
+      return `${time === "" ? "" : time} | ${day}-${month}-${year} `;
     case "MM-DD-YYYY":
-      return `${month}-${day}-${year} ${time === "" ? "" : time}`;
+      return `${time === "" ? "" : time} | ${month}-${day}-${year} `;
     case "YYYY-MM-DD":
-      return `${year}-${month}-${day} ${time === "" ? "" : time}`;
+      return `${time === "" ? "" : time} | ${year}-${month}-${day} `;
     default:
       return "Invalid format";
   }
