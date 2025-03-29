@@ -1,0 +1,40 @@
+:root {
+  /* Font Family - Custom Variables */
+  --ff-TimeNR: "Times New Roman", serif;
+  --ff-gill: "Gill Sans Extrabold", sans-serif;
+  --ff-goudy: "Goudy Bookletter 1911", sans-serif;
+  --ff-serif: serif;
+  --ff-sans: sans-serif;
+  --ff-mono: monospace;
+  --ff-cursive: cursive;
+  --ff-fantasy: fantasy;
+  --ff-ui-serif: ui-serif;
+  --ff-ui-sans: ui-sans-serif;
+  --ff-ui-mono: ui-monospace;
+  --ff-ui-rounded: ui-rounded;
+  --ff-emoji: emoji;
+  --ff-math: math;
+  --ff-fangsong: fangsong;
+
+  /* Global values */
+  --ff-inherit: inherit; /* Kế thừa font từ phần tử cha */
+  --ff-initial: initial; /* Đặt về giá trị mặc định của trình duyệt */
+  --ff-revert: revert; /* Khôi phục về giá trị mặc định của trình duyệt hoặc stylesheet gốc */
+  --ff-unset: unset; /* Nếu thẻ cha có font-family → kế thừa, nếu không → trở về giá trị mặc định */
+}
+
+/* Sử dụng biến trong CSS */
+body {
+  font-family: var(--ff-sans);
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--ff-TimeNR);
+}
+
+p {
+  font-family: var(--ff-inherit);
+}

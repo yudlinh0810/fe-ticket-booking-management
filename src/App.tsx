@@ -1,17 +1,47 @@
-import "./App.css";
+import "./styles/app.scss";
+import "./styles/reset.scss";
+import "./styles/root.scss";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
 import useClientWidth from "./utils/useClientWidth.util";
-import CarManage from "./pages/CarManage";
+import CarManage from "./pages/CarManage/CarManage";
+import AddCar from "./pages/CarManage/AddCar";
+import UpdateCar from "./pages/CarManage/UpdateCar";
+import Layout from "./layouts/Layout";
+import DetailCar from "./pages/CarManage/DetailCar";
+import ManageLayout from "./layouts/ManageLayout";
 
 function App() {
   useClientWidth();
   return (
     <>
       <Router>
-        <Routes>
-          <Route path="/" element={<div>Home</div>} />
-          <Route path="/car-manage" element={<CarManage />} />
-        </Routes>
+        <Layout>
+          <Routes>
+            <Route index element={<div>Home</div>} />
+            <Route path="/car-manage" element={<ManageLayout />}>
+              <Route index element={<CarManage />} />
+              <Route path="page/:page" element={<CarManage />} />
+              <Route path="detail/:id" element={<DetailCar />} />
+              <Route path="add" element={<AddCar />} />
+              <Route path="update/:id" element={<UpdateCar />} />
+            </Route>
+          </Routes>
+        </Layout>
+
+        <ToastContainer
+          position="top-right"
+          autoClose={700}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="colored"
+        />
       </Router>
     </>
   );

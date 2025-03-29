@@ -4,7 +4,6 @@ import { debounce } from "./debounce.util";
 const useClientWidth = () => {
   const updateClientWidth = () => {
     const clientWidth = document.documentElement.clientWidth;
-    console.log("client-width", clientWidth);
     document.documentElement.style.setProperty("--client-width", `${clientWidth}px`);
   };
   useEffect(() => {
