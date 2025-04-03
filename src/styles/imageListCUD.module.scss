@@ -1,0 +1,24 @@
+@use "./mixin" as mix;
+
+.container {
+  width: 33.7rem;
+
+  @include mix.responsive(mobile) {
+    width: 22.7rem;
+  }
+
+  .add-btn {
+    margin-bottom: 1rem;
+
+    background-color: var(--primary);
+    color: var(--white);
+  }
+
+  .img-list {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+}
