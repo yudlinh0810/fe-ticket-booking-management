@@ -7,11 +7,11 @@ export interface Car {
   // status?: "Sắp khởi hành" | "Đang chạy" | "Bảo trì";
   image?: ImgCar;
   images?: ImgCar[];
-  createAt: string; // timestamp
-  updateAt: string;
+  createAt?: string; // timestamp
+  updateAt?: string;
 }
 
-type IsMain = 0 | 1;
+export type IsMain = 0 | 1;
 export interface ImgCar {
   id?: number;
   carId: number;

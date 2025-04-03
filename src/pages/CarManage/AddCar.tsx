@@ -1,97 +1,120 @@
-import { useRef, useState } from "react";
-import { useCustomMutation } from "../../hooks/useCustomQuery";
+import styles from "../../styles/addCar.module.scss";
 import { addCar } from "../../services/car.service";
+import { Link } from "react-router-dom";
+import ImageListCUD, { ImageType } from "../../components/ImageListCUD";
+import { useEffect, useState } from "react";
+import { useCustomNavMutation } from "../../hooks/useCustomQuery";
 
 const AddCar = () => {
-  const fileRef = useRef<HTMLInputElement>(null);
-  const filesRef = useRef<HTMLInputElement>(null);
-  const [files, setFiles] = useState<File[]>([]);
-  const [previews, setPreviews] = useState<string[]>([]);
-  const [indexFileUpdate, setIndexFileUpdate] = useState<number>();
-  const mutationAddCar = useCustomMutation(addCar, "/car-manage");
+  const [images, setImages] = useState<ImageType[]>([]);
+
+  const [form, setForm] = useState({
+    licensePlate: "",
+    capacity: 0,
+    type: "",
+    indexIsMain: "",
+  });
+
+  const mutateUpdate = useCustomNavMutation(
+    addCar,
+    "/car-manage",
+    "Thêm xe thành công",
+    "Thêm xe thất bại"
+  );
+
+  // const imageList = car?.images ?? null;
+
+  const handleChangeValue = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = event.target;
+    setForm((prevForm) => ({ ...prevForm, [name]: value }));
+  };
+
   const handleAddCar = async () => {
-    const newCar = {
-      licensePlate: "43A-832.65",
-      capacity: null,
-      type: "Xe thường",
-    };
     const formData = new FormData();
-    formData.append("data", JSON.stringify(newCar));
-    files.forEach((file) => {
-      formData.append("files", file);
+    formData.append("data", JSON.stringify(form));
+
+    images.forEach((image, index) => {
+      formData.append("files", image.image);
+      if (image.isMain) {
+        const updateForm = { ...form };
+        updateForm.indexIsMain = index.toString();
+        formData.set("data", JSON.stringify(updateForm));
+      }
     });
-    mutationAddCar.mutate(formData);
-  };
-  const handleClickChooseFiles = () => {
-    filesRef.current?.click();
+
+    mutateUpdate.mutate(formData);
   };
 
-  const handleUpdateFile = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newFile = e.target.files?.[0];
-    if (!newFile || indexFileUpdate === undefined) return;
-    setFiles((prev) => prev.map((file, index) => (index === indexFileUpdate ? newFile : file)));
-    setPreviews((prev) =>
-      prev.map((preview, index) =>
-        index === indexFileUpdate ? URL.createObjectURL(newFile) : preview
-      )
-    );
-  };
+  useEffect(() => {}, [images]);
 
-  const handleChangeFiles = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newFiles = e.target.files ? Array.from(e.target.files) : [];
-    setFiles((prev) => [...prev, ...newFiles]);
-    setPreviews((prev) => [...prev, ...newFiles.map((file) => URL.createObjectURL(file))]);
-  };
-
-  const handleClickImg = (index: number) => {
-    // setPreviews((prev) => prev.filter((_, i) => i !== index));
-    // setFiles((prev) => prev.filter((_, i) => i !== index));
-    setIndexFileUpdate(index);
-    console.log("index", index);
-    fileRef.current?.click();
-  };
-
-  console.log("files", files);
   return (
-    <div>
-      <button onClick={handleAddCar}>Add Car</button>
-      <div>
-        <button type="button" onClick={handleClickChooseFiles}>
-          Chọn ảnh ik
-        </button>
-        <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
-          {previews.map((preview, index) => (
-            <img
-              key={index}
-              src={preview}
-              alt={`image-${index}`}
-              onClick={() => handleClickImg(index)}
-              style={{
-                objectFit: "cover",
-                width: "5rem",
-                height: "5rem",
-                cursor: "pointer",
-                border: "1px solid black",
-              }}
-            />
-          ))}
-        </div>
-        <input
-          ref={filesRef}
-          type="file"
-          accept="image/png, image/jpeg, image/jpg"
-          multiple
-          style={{ display: "none" }}
-          onChange={handleChangeFiles}
-        />
-        <input
-          ref={fileRef}
-          type="file"
-          accept="image/png, image/jpeg, image/jpg"
-          style={{ display: "none" }}
-          onChange={handleUpdateFile}
-        />
+    <div className={styles.container}>
+      <div className={styles["feats"]}>
+        <Link to={`/car-manage`} className={`${styles["btn-back"]} ${styles.btn}`}>
+          Quay lại
+        </Link>
+        <button className={`${styles["btn-delete"]} ${styles.btn}`}>Xóa</button>
       </div>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault(); // Ngăn không cho form submit mặc định
+          handleAddCar();
+        }}
+        className={styles["update-car"]}
+      >
+        <div className={styles.title}>
+          <h2 className={styles["content-title"]}>Thông tin chi tiết</h2>
+        </div>
+        <ul className={styles["input-list"]}>
+          {[
+            { label: "Biển số xe", name: "licensePlate" },
+            { label: "Sức chứa", name: "capacity" },
+            { label: "Loại xe", type: "select", name: "type" },
+          ].map((item, index) => (
+            <li key={index} className={` ${styles.item}`}>
+              <label htmlFor={item.label} className={styles.title}>
+                {item.label}
+              </label>
+
+              {item.type !== "select" ? (
+                <input
+                  className={styles.input}
+                  id={item.label}
+                  name={item.name}
+                  onChange={handleChangeValue}
+                />
+              ) : (
+                <select
+                  name={item.name}
+                  id={item.label}
+                  className={styles.input}
+                  onChange={handleChangeValue}
+                >
+                  <option>--- Chọn loại xe ---</option>
+                  {["xe thường", "xe giường nằm"].map((type) => (
+                    <option key={type} value={type}>
+                      {type}
+                    </option>
+                  ))}
+                </select>
+              )}
+            </li>
+          ))}
+          <li className={`${styles.item} ${styles["action-img"]}`}>
+            <p className={`${styles.title}`}>Hình ảnh</p>
+            <div className={`${styles["img-list"]}`}>
+              <div className={`${styles["img-item"]} ${styles["add-img"]}`}>
+                <ImageListCUD images={images} setImages={setImages} />
+              </div>
+            </div>
+          </li>
+          <div className={styles.action}>
+            <button type="submit" className={styles["btn-add"]}>
+              Thêm xe
+            </button>
+          </div>
+        </ul>
+      </form>
     </div>
   );
 };

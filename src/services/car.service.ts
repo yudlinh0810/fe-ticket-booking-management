@@ -34,3 +34,11 @@ export const deleteCar = async (id: number) => {
 export const addImgsCar = async (data: FormData) => {
   return await bookTicketAPI.post(`/car/img-car/add`, data);
 };
+// success
+export const updateImgCar = async (data: FormData): Promise<object> => {
+  return await bookTicketAPI.put(`/car/image/update`, data).then((res) => res.data);
+};
+
+export const deleteImgCar = async (data: object) => {
+  return await bookTicketAPI.delete(`/car/image/delete`, { data }).then((res) => res.data);
+};

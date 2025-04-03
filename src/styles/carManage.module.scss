@@ -71,8 +71,10 @@
       padding: 0.5rem 0.725rem;
       background-color: #28a745;
       border: none;
-      color: white;
       border-radius: 0.5rem;
+
+      color: white;
+      text-align: center;
       cursor: pointer;
 
       &:hover {

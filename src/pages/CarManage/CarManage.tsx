@@ -150,7 +150,7 @@ const CarManage: React.FC = () => {
                       to={`${urlMain}/update/${car.id}`}
                       className={`${styles["btn-edit"]} ${styles.btn}`}
                     >
-                      Sửa
+                      Cập nhật
                     </Link>
                     <button className={`${styles["btn-delete"]} ${styles.btn}`}>Xóa</button>
                   </div>
