@@ -1,11 +1,7 @@
 @use "./mixin" as mix;
 
 .container {
-  width: 33.7rem;
-
-  @include mix.responsive(mobile) {
-    width: 22.7rem;
-  }
+  width: 100%;
 
   .add-btn {
     margin-bottom: 1rem;

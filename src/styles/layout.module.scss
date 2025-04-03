@@ -2,8 +2,6 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-
-  // overflow: hidden;
 }
 
 .center {
@@ -18,8 +16,11 @@
 }
 
 .main {
+  overflow: hidden;
+
   flex: 1;
   padding: 2rem;
+
   background-color: #f0f0f0;
 }
 

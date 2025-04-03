@@ -7,10 +7,10 @@
   gap: 1rem;
 
   min-width: 33.7rem;
-  max-width: 100%;
+  max-width: 80%;
 
   @include mix.responsive(mobile) {
-    min-width: 22.7rem;
+    min-width: 21.7rem;
   }
 
   .feats {
