@@ -57,7 +57,7 @@ const CarManage: React.FC = () => {
     navigate(newPage > 1 ? `/car-manage/page/${newPage}` : `/car-manage`, { replace: true });
   };
 
-  const handleRedirectDetail = (e: React.MouseEvent<HTMLTableCellElement>, id: number) => {
+  const handleRedirectDetail = (id: number) => {
     navigate(`/car-manage/detail/${id}`);
   };
 
@@ -129,7 +129,7 @@ const CarManage: React.FC = () => {
           <tbody>
             {carData.map((car, index) => (
               <tr key={index}>
-                <td className={styles["car-id"]} onClick={(e) => handleRedirectDetail(e, car.id)}>
+                <td className={styles["car-id"]} onClick={() => handleRedirectDetail(car.id)}>
                   {index + 1 + currentPage * ITEMS_PER_PAGE}
                 </td>
                 <td>
