@@ -3,7 +3,7 @@ import { bookTicketAPI } from "./customize.service";
 
 export const getCarList = async ({ offset, limit }: { offset: number; limit: number }) => {
   return await bookTicketAPI
-    .get<{ data: Car[]; total: number }>(`/car/get-all?offset=${offset}&limit${limit}`)
+    .get<{ data: Car[]; total: number }>(`/car/get-all?offset=${offset}&limit=${limit}`)
     .then((res) => res.data);
 };
 

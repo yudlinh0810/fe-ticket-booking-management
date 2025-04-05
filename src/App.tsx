@@ -11,6 +11,9 @@ import UpdateCar from "./pages/CarManage/UpdateCar";
 import Layout from "./layouts/Layout";
 import DetailCar from "./pages/CarManage/DetailCar";
 import ManageLayout from "./layouts/ManageLayout";
+import CustomerManage from "./pages/CustomerManage/CustomerManage";
+import AddCustomer from "./pages/CustomerManage/AddCustomer";
+import UpdateCustomer from "./pages/CustomerManage/UpdateCustomer";
 
 function App() {
   useClientWidth();
@@ -26,6 +29,13 @@ function App() {
               <Route path="detail/:id" element={<DetailCar />} />
               <Route path="add" element={<AddCar />} />
               <Route path="update/:id" element={<UpdateCar />} />
+            </Route>
+            <Route path="/customer-manage" element={<ManageLayout />}>
+              <Route index element={<CustomerManage />} />
+              <Route path="page/:page" element={<CustomerManage />} />
+              {/* <Route path="detail/:id" element={<CustomerDetail />} /> */}
+              <Route path="add" element={<AddCustomer />} />
+              <Route path="update/:id" element={<UpdateCustomer />} />
             </Route>
           </Routes>
         </Layout>

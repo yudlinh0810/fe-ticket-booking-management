@@ -1,0 +1,158 @@
+import { useQuery } from "@tanstack/react-query";
+import React, { useEffect, useState } from "react";
+import { GoTriangleDown } from "react-icons/go";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import Loading from "../../components/Loading";
+import Pagination from "../../components/Pagination";
+import { getCustomerList } from "../../services/customer.service";
+import styles from "../../styles/customerManage.module.scss";
+import { ArrangeType } from "../../types/type";
+
+const ITEMS_PER_PAGE = 5;
+
+const CustomerManage: React.FC = () => {
+  const navigate = useNavigate();
+  const { page } = useParams<{ page?: string }>();
+  const location = useLocation();
+  const [arrangeType, setArrangeType] = useState<ArrangeType>("desc");
+  const [currentPage, setCurrentPage] = useState<number>(
+    page ? Math.max(1, parseInt(page, 10)) - 1 : 0
+  );
+
+  const urlMain = "/customer-manage";
+
+  // Khi URL thay đổi, cập nhật currentPage
+  useEffect(() => {
+    const pageNum = page ? Math.max(1, parseInt(page, 10)) - 1 : 0;
+    setCurrentPage(pageNum);
+  }, [location.pathname]);
+
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["customerList", currentPage, arrangeType],
+    queryFn: () =>
+      getCustomerList({
+        offset: currentPage * ITEMS_PER_PAGE,
+        limit: ITEMS_PER_PAGE,
+        arrangeType: arrangeType,
+      }),
+    staleTime: 5 * 60 * 10,
+    placeholderData: (previousData) => previousData,
+  });
+
+  const total = data?.total ?? 0;
+  const customerData = data?.data || [];
+
+  const toggleArrangeType = () => {
+    setArrangeType((prevArrangeType) => (prevArrangeType === "asc" ? "desc" : "asc"));
+  };
+  console.log("currentPage", currentPage);
+  const handlePageClick = (selectedItem: { selected: number }) => {
+    const newPage = selectedItem.selected + 1;
+    console.log("newPage", newPage);
+    setCurrentPage(selectedItem.selected); // Cập nhật state ngay lập tức
+    navigate(newPage > 1 ? `/customer-manage/page/${newPage}` : `/customer-manage`, {
+      replace: true,
+    });
+  };
+
+  const handleRedirectDetail = (id: number) => {
+    navigate(`/customer-manage/detail/${id}`);
+  };
+
+  useEffect(() => {
+    window.scrollTo(0, 0); // Scroll lên đầu khi chuyển trang
+  }, [data]);
+
+  if (isLoading) return <Loading />;
+  if (error) return <p className={styles.error}>Lỗi khi tải dữ liệu</p>;
+
+  return (
+    <div className={styles.container}>
+      <div className={styles.header}>
+        <div className={styles.search}>
+          <input
+            type="text"
+            placeholder="Tìm kiếm..."
+            className={styles["search-input"]}
+            // onChange={handleSearch}
+          />
+        </div>
+
+        <Link to={"/car-manage/add"} className={styles["btn-add"]}>
+          Thêm nguời dùng
+        </Link>
+      </div>
+      <div className={styles["table-wrapper"]}>
+        <table className={styles.table}>
+          <thead>
+            <tr>
+              <th>
+                <div className={styles["numerical-order"]}>
+                  <p>STT</p>
+                  <GoTriangleDown
+                    className={`${styles.icon} ${
+                      arrangeType === "desc" ? styles.desc : styles.asc
+                    }`}
+                    onClick={toggleArrangeType}
+                  />
+                </div>
+              </th>
+              <th>Email</th>
+              <th>Hình ảnh</th>
+              <th>Họ và tên</th>
+              <th>SĐT</th>
+              <th>Ngày sinh</th>
+              <th>Thao Tác</th>
+            </tr>
+          </thead>
+          <tbody>
+            {customerData.map((customer, index) => (
+              <tr key={index}>
+                <td
+                  className={styles["customer-id"]}
+                  onClick={() => handleRedirectDetail(customer.id)}
+                >
+                  {index + 1 + currentPage * ITEMS_PER_PAGE}
+                </td>
+                <td>{customer.email}</td>
+                <td>
+                  <img className={styles.img} loading="lazy" src={customer.urlImg} alt="" />
+                </td>
+                <td>{customer.fullName}</td>
+                <td>{customer.phone ? "0" + customer.phone : ""}</td>
+                <td>{customer.dateBirth}</td>
+                <td>
+                  <div className={styles["btn-list"]}>
+                    <Link
+                      to={`${urlMain}/detail/${customer.id}`}
+                      className={`${styles["btn-detail"]} ${styles.btn}`}
+                    >
+                      Chi tiết
+                    </Link>
+                    <Link
+                      to={`${urlMain}/update/${customer.id}`}
+                      className={`${styles["btn-edit"]} ${styles.btn}`}
+                    >
+                      Cập nhật
+                    </Link>
+                    <button className={`${styles["btn-delete"]} ${styles.btn}`}>Xóa</button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <div className={styles.pagination}>
+        <Pagination
+          pageCount={Math.ceil(total / ITEMS_PER_PAGE)}
+          onPageChange={handlePageClick}
+          currentPage={currentPage}
+        />
+      </div>
+    </div>
+  );
+};
+
+export default CustomerManage;
