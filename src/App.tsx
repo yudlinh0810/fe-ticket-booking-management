@@ -5,13 +5,13 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
 import useClientWidth from "./utils/useClientWidth.util";
-import CarManage from "./pages/CarManage/CarManage";
+import CarManage from "./pages/CarManage/ManageCar";
 import AddCar from "./pages/CarManage/AddCar";
 import UpdateCar from "./pages/CarManage/UpdateCar";
 import Layout from "./layouts/Layout";
 import DetailCar from "./pages/CarManage/DetailCar";
 import ManageLayout from "./layouts/ManageLayout";
-import CustomerManage from "./pages/CustomerManage/CustomerManage";
+import CustomerManage from "./pages/CustomerManage/ManageCustomer";
 import AddCustomer from "./pages/CustomerManage/AddCustomer";
 import UpdateCustomer from "./pages/CustomerManage/UpdateCustomer";
 
