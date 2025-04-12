@@ -1,5 +1,5 @@
 import React, { useCallback, useRef, useState } from "react";
-import styles from "../styles/DefaultImage.module.scss";
+import styles from "../styles/defaultImage.module.scss";
 import { useCustomNavMutation } from "../hooks/useCustomQuery";
 import { updateImgCustomer } from "../services/customer.service";
 import { toast } from "react-toastify";
