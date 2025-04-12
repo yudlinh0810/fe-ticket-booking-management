@@ -133,13 +133,6 @@
       white-space: nowrap; // Giữ nội dung không bị xuống dòng
     }
 
-    .img {
-      width: 4rem;
-      height: 4rem;
-      object-fit: cover;
-      aspect-ratio: 16/9;
-    }
-
     th {
       background-color: #f4f4f4;
       .numerical-order {

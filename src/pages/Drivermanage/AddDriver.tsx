@@ -5,10 +5,11 @@ import DefaultImage from "../../components/DefaultImage";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { useCustomNavMutation } from "../../hooks/useCustomQuery";
-import { addCustomer } from "../../services/customer.service";
+import { addDriver } from "../../services/driver.service";
 
-const AddCustomer = () => {
+const AddDriver = () => {
   const dateBirthRef = useRef<HTMLInputElement>(null);
+  const experienceYearRef = useRef<HTMLInputElement>(null);
   const [statePassword, setStatePassword] = useState(false);
   const [image, setImage] = useState<File | null>(null);
   const [form, setForm] = useState({
@@ -19,11 +20,13 @@ const AddCustomer = () => {
     email: "",
     sex: "",
     password: "",
+    experienceYears: "",
+    licenseNumber: "",
   });
 
   const addMutate = useCustomNavMutation(
-    addCustomer,
-    "/customer-manage",
+    addDriver,
+    "/driver-manage",
     "Thêm mới thành công",
     "Thêm mới thất bại"
   );
@@ -40,7 +43,7 @@ const AddCustomer = () => {
     });
   };
 
-  const handleAddCustomer = async () => {
+  const handleAddDriver = async () => {
     const formData = new FormData();
     formData.append("data", JSON.stringify(form));
     if (image) {
@@ -57,6 +60,14 @@ const AddCustomer = () => {
     }
   };
 
+  const handleClickInputExperienceYears = () => {
+    if (experienceYearRef.current) {
+      experienceYearRef.current.showPicker();
+    } else {
+      return;
+    }
+  };
+
   const handleClickSelectedImg = (img: File) => {
     setImage(img);
   };
@@ -68,7 +79,7 @@ const AddCustomer = () => {
   return (
     <div className={styles.container}>
       <div className={styles["feats"]}>
-        <Link to={`/customer-manage`} className={`${styles["btn-back"]} ${styles.btn}`}>
+        <Link to={`/driver-manage`} className={`${styles["btn-back"]} ${styles.btn}`}>
           Quay lại
         </Link>
         <button className={`${styles["btn-delete"]} ${styles.btn}`}>Xóa</button>
@@ -77,12 +88,12 @@ const AddCustomer = () => {
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          handleAddCustomer();
+          handleAddDriver();
         }}
         className={styles.form}
       >
         <div className={styles.title}>
-          <h2 className={styles["content-title"]}>Thêm mới khách hàng</h2>
+          <h2 className={styles["content-title"]}>Thêm mới tài xế</h2>
         </div>
         <ul className={styles["form-group-list"]}>
           <li className={styles["form-group-item"]}>
@@ -162,6 +173,26 @@ const AddCustomer = () => {
             </span>
           </li>
 
+          {[
+            { label: "Mã Giấy phép lái xe", name: "licenseNumber", type: "text" },
+            { label: "Ngày cấp", name: "experienceYears", type: "date" },
+          ].map((item, index) => (
+            <li key={index} className={styles["form-group-item"]}>
+              <p className={styles.title}>{item.label}</p>
+              <input
+                ref={item.name === "experienceYears" ? experienceYearRef : null}
+                onClick={
+                  item.name === "experienceYears" ? handleClickInputExperienceYears : undefined
+                }
+                name={item.name}
+                type={item.type}
+                className={styles["form-control"]}
+                value={form[item.name as keyof typeof form]}
+                onChange={handleChangeValue}
+              />
+            </li>
+          ))}
+
           <li className={styles["form-group-item"]}>
             <p className={styles.title}>Địa chỉ</p>
             <textarea
@@ -185,4 +216,4 @@ const AddCustomer = () => {
   );
 };
 
-export default AddCustomer;
+export default AddDriver;

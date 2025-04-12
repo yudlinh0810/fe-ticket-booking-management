@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import Loading from "../../components/Loading";
 import { dateTimeTransform } from "../../utils/transform";
-import ImageListCUD, { ImageType } from "../../components/ImageListCUD";
+import ImageListCUD, { ImageCUDType } from "../../components/ImageListCUD";
 import { useEffect, useState } from "react";
 import Image from "../../components/Image";
 import { useCustomNavMutation } from "../../hooks/useCustomQuery";
@@ -15,13 +15,13 @@ const UpdateCar = () => {
   const idFetch = id ?? "0";
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ["car"],
+    queryKey: ["customer", idFetch],
     queryFn: () => getDetailCar(idFetch),
     staleTime: 5 * 60 * 10,
   });
 
   const car = data;
-  const [images, setImages] = useState<ImageType[]>([]);
+  const [images, setImages] = useState<ImageCUDType[]>([]);
 
   const [form, setForm] = useState({
     id: id,

@@ -1,9 +1,11 @@
-import { Car } from "../types/car.type";
+import { Car } from "../types/car";
 import { bookTicketAPI } from "./customize.service";
 
 export const getCarList = async ({ offset, limit }: { offset: number; limit: number }) => {
   return await bookTicketAPI
-    .get<{ data: Car[]; total: number }>(`/car/get-all?offset=${offset}&limit=${limit}`)
+    .get<{ data: Car[]; total: number; totalPage: number }>(
+      `/car/get-all?offset=${offset}&limit=${limit}`
+    )
     .then((res) => res.data);
 };
 
@@ -17,7 +19,7 @@ export const addCar = async (data: FormData) => {
 
 export const getDetailCar = async (id: string) => {
   return await bookTicketAPI
-    .post<Car>(`/car/detail/${id}`, {
+    .get<Car>(`/car/detail/${id}`, {
       headers: { "Content-Type": "multipart/form-data" },
     })
     .then((res) => res.data);

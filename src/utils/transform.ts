@@ -9,7 +9,8 @@ const formatType = [
 
 export const dateTimeTransform = (
   dateString: string | undefined,
-  format: string = "DD/MM/YYYY"
+  format: string = "DD/MM/YYYY",
+  isTime: boolean = true
 ) => {
   if (!dateString) return "Invalid date";
   if (!formatType.includes(format)) return "Invalid format";
@@ -24,17 +25,17 @@ export const dateTimeTransform = (
 
   switch (format) {
     case "DD/MM/YYYY":
-      return `${time === "" ? "" : time} | ${day}/${month}/${year} `;
+      return `${isTime === false ? "" : `${time} | `}${day}/${month}/${year} `;
     case "MM/DD/YYYY":
-      return `${time === "" ? "" : time} | ${month}/${day}/${year} `;
+      return `${isTime === false ? "" : `${time} | `}${month}/${day}/${year} `;
     case "YYYY/MM/DD":
-      return `${time === "" ? "" : time} | ${year}/${month}/${day} `;
+      return `${isTime === false ? "" : `${time} | `}${year}/${month}/${day} `;
     case "DD-MM-YYYY":
-      return `${time === "" ? "" : time} | ${day}-${month}-${year} `;
+      return `${isTime === false ? "" : `${time} | `}${day}-${month}-${year} `;
     case "MM-DD-YYYY":
-      return `${time === "" ? "" : time} | ${month}-${day}-${year} `;
+      return `${isTime === false ? "" : `${time} | `}${month}-${day}-${year} `;
     case "YYYY-MM-DD":
-      return `${time === "" ? "" : time} | ${year}-${month}-${day} `;
+      return `${isTime === false ? "" : `${time} | `}${year}-${month}-${day} `;
     default:
       return "Invalid format";
   }

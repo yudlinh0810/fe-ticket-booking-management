@@ -4,15 +4,15 @@ import { GoTriangleDown } from "react-icons/go";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import Loading from "../../components/Loading";
 import Pagination from "../../components/Pagination";
-import { getCustomerList } from "../../services/customer.service";
 import styles from "../../styles/manageCustomer.module.scss";
 import { ArrangeType } from "../../types/type";
 import DefaultImage from "../../components/DefaultImage";
 import { dateTimeTransform } from "../../utils/transform";
+import { getDriverList } from "../../services/driver.service";
 
 const ITEMS_PER_PAGE = 10;
 
-const ManageCustomer: React.FC = () => {
+const ManageDriver: React.FC = () => {
   const navigate = useNavigate();
   const { page } = useParams<{ page?: string }>();
   const location = useLocation();
@@ -20,7 +20,7 @@ const ManageCustomer: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<number>(
     page ? Math.max(1, parseInt(page, 10)) - 1 : 0
   );
-  const urlMain = "/customer-manage";
+  const urlMain = "/driver-manage";
 
   // Khi URL thay đổi, cập nhật currentPage
   useEffect(() => {
@@ -29,9 +29,9 @@ const ManageCustomer: React.FC = () => {
   }, [location.pathname]);
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ["customerList", currentPage, arrangeType],
+    queryKey: ["driverList", currentPage, arrangeType],
     queryFn: () =>
-      getCustomerList({
+      getDriverList({
         offset: currentPage * ITEMS_PER_PAGE,
         limit: ITEMS_PER_PAGE,
         arrangeType: arrangeType,
@@ -41,16 +41,15 @@ const ManageCustomer: React.FC = () => {
   });
 
   const total = data?.total ?? 0;
-  const customerData = data?.data || [];
+  const driverData = data?.data || [];
 
   const toggleArrangeType = () => {
     setArrangeType((prevArrangeType) => (prevArrangeType === "asc" ? "desc" : "asc"));
   };
   const handlePageClick = (selectedItem: { selected: number }) => {
     const newPage = selectedItem.selected + 1;
-    console.log("newPage", newPage);
     setCurrentPage(selectedItem.selected); // Cập nhật state ngay lập tức
-    navigate(newPage > 1 ? `/customer-manage/page/${newPage}` : `/customer-manage`, {
+    navigate(newPage > 1 ? `/driver-manage/page/${newPage}` : `/driver-manage`, {
       replace: true,
     });
   };
@@ -78,8 +77,8 @@ const ManageCustomer: React.FC = () => {
           />
         </div>
 
-        <Link to={"/customer-manage/add"} className={styles["btn-add"]}>
-          Thêm khách hàng
+        <Link to={"/driver-manage/add"} className={styles["btn-add"]}>
+          Thêm tài xế
         </Link>
       </div>
       <div className={styles["table-wrapper"]}>
@@ -102,35 +101,37 @@ const ManageCustomer: React.FC = () => {
               <th>Họ và tên</th>
               <th>SĐT</th>
               <th>Ngày sinh</th>
+              <th>Mã giấy phép</th>
               <th>Thao Tác</th>
             </tr>
           </thead>
           <tbody>
-            {customerData.map((customer, index) => (
+            {driverData.map((driver, index) => (
               <tr key={index}>
                 <td
-                  className={styles["customer-id"]}
-                  onClick={() => customer.id && handleRedirectDetail(customer.id)}
+                  className={styles["driver-id"]}
+                  onClick={() => driver.id && handleRedirectDetail(driver.id)}
                 >
                   {index + 1 + currentPage * ITEMS_PER_PAGE}
                 </td>
-                <td>{customer.email}</td>
+                <td>{driver.email}</td>
                 <td>
-                  <DefaultImage src={customer.urlImg} />
+                  <DefaultImage src={driver.urlImg} />
                 </td>
-                <td>{customer.fullName}</td>
-                <td>{customer.phone}</td>
-                <td>{dateTimeTransform(customer.dateBirth, "DD/MM/YYYY", false)}</td>
+                <td>{driver.fullName}</td>
+                <td>{driver.phone}</td>
+                <td>{driver.licenseNumber}</td>
+                <td>{dateTimeTransform(driver.dateBirth, "DD/MM/YYYY", false)}</td>
                 <td>
                   <div className={styles["btn-list"]}>
                     <Link
-                      to={`${urlMain}/detail/${customer.id}`}
+                      to={`${urlMain}/detail/${driver.id}`}
                       className={`${styles["btn-detail"]} ${styles.btn}`}
                     >
                       Chi tiết
                     </Link>
                     <Link
-                      to={`${urlMain}/update/${customer.id}`}
+                      to={`${urlMain}/update/${driver.id}`}
                       className={`${styles["btn-edit"]} ${styles.btn}`}
                     >
                       Cập nhật
@@ -155,4 +156,4 @@ const ManageCustomer: React.FC = () => {
   );
 };
 
-export default ManageCustomer;
+export default ManageDriver;

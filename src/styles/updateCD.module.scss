@@ -7,26 +7,39 @@
   gap: 1rem;
 
   min-width: 33.7rem;
-  max-width: 100%;
+  max-width: 80%;
 
   @include mix.responsive(mobile) {
-    min-width: 22.7rem;
+    min-width: 21.7rem !important;
   }
 
-  .feat-back {
-    text-align: end;
+  .feats {
+    display: flex;
+    justify-content: space-between;
 
-    .btn-back {
+    .btn {
+      display: grid;
+      place-items: center;
+
+      width: 5rem;
       padding: 0.6rem;
       border-radius: 0.5rem;
 
       font-size: 1.12rem;
-      background-color: var(--bright-blue);
       color: var(--white);
+      text-align: center;
+    }
+
+    .btn-back {
+      background-color: var(--bright-blue);
+    }
+
+    .btn-delete {
+      background-color: var(--danger);
     }
   }
 
-  .detail-car {
+  .update {
     background-color: var(--light-gray);
 
     & > .title {
@@ -43,67 +56,70 @@
       background-color: var(--white);
 
       color: var(--belize-hole);
+      text-transform: capitalize;
       text-align: center;
       font-size: 2rem;
       font-weight: bold;
-
-      .feat-list {
-        display: flex;
-        justify-content: center;
-        gap: 1rem;
-
-        font-size: 1rem;
-
-        .feat-item {
-          display: grid;
-          place-items: center;
-
-          width: 6rem;
-          border-radius: 0.5rem;
-          padding: 0.36rem 0;
-
-          color: var(--white);
-        }
-
-        .btn-update {
-          background-color: var(--primary);
-        }
-
-        .btn-delete {
-          background-color: var(--danger);
-        }
-      }
     }
 
-    .detail {
+    .data-list {
       display: flex;
       flex-direction: column;
       gap: 1rem;
 
-      padding: 1rem 1.2rem;
+      padding: 1rem 0.75rem;
       border-radius: 0.32rem;
 
       background-color: var(--white);
 
-      .group {
+      .item {
+        display: flex;
+        flex-direction: column;
+        gap: 0.6rem;
         .title {
-          margin-bottom: 0.6rem;
-
           text-transform: capitalize;
           font-size: 1.15rem;
           font-weight: 500;
         }
 
         .data {
-          width: calc((100% - 1rem));
           padding: 0.2rem 0.4rem;
-          border: 1px solid var(--bright-blue);
+          border: 1px solid var(--gray);
           border-radius: 0.25rem;
 
           font-size: 1.1rem;
-          text-transform: none;
           outline: none;
+
+          &:focus {
+            border-color: var(--bright-blue);
+          }
         }
+
+        .textarea {
+          min-height: 3rem;
+          max-height: 5rem;
+          resize: vertical;
+        }
+      }
+      .item-password {
+        position: relative;
+
+        .pass-status {
+          position: absolute;
+          top: 2rem;
+          right: 0.5rem;
+          font-size: 1.2rem;
+        }
+      }
+    }
+
+    .feat-update {
+      display: flex;
+      justify-content: center;
+
+      .btn-update {
+        background-color: var(--bright-blue);
+        color: var(--white);
       }
     }
   }

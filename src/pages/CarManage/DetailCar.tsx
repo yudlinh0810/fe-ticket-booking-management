@@ -5,22 +5,20 @@ import { getDetailCar } from "../../services/car.service";
 import Loading from "../../components/Loading";
 import { dateTimeTransform } from "../../utils/transform";
 import { Link } from "react-router-dom";
+import ImageList from "../../components/ImageList";
 
 const DetailCar = () => {
   const { id } = useParams();
   const idFetch = id ?? "0";
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ["car"],
+    queryKey: ["car", idFetch],
     queryFn: () => getDetailCar(idFetch),
     staleTime: 5 * 60 * 10,
   });
 
   const car = data ?? null;
-  const imgsLength = car?.images?.length ?? 0;
   const imageList = car?.images ?? null;
-
-  console.log(car);
 
   if (isLoading) return <Loading />;
   if (error) return <p className={styles.error}>Lỗi khi tải dữ liệu</p>;
@@ -60,15 +58,7 @@ const DetailCar = () => {
           ))}
           <li className={`${styles.group}`}>
             <p className={`${styles.title}`}>Hình ảnh</p>
-            <div className={`${styles["img-list"]}`}>
-              {car?.images && imgsLength > 0
-                ? imageList?.map((img, index) => (
-                    <div key={index} className={`${styles["img-item"]}`}>
-                      <img src={img.urlImg} alt={`Hình ảnh ${index}`} className={`${styles.img}`} />
-                    </div>
-                  ))
-                : null}
-            </div>
+            <ImageList data={imageList ?? []} />
           </li>
         </ul>
       </div>

@@ -2,15 +2,16 @@ import React, { useEffect, useState } from "react";
 import { GoTriangleDown } from "react-icons/go";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
-import styles from "../../styles/carManage.module.scss";
+import styles from "../../styles/manageCar.module.scss";
 import { getCarList } from "../../services/car.service";
 import { Link } from "react-router-dom";
 import Pagination from "../../components/Pagination";
 import Loading from "../../components/Loading";
+import DefaultImage from "../../components/DefaultImage";
 
-const ITEMS_PER_PAGE = 5;
+const ITEMS_PER_PAGE = 10;
 
-const CarManage: React.FC = () => {
+const ManageCar: React.FC = () => {
   const navigate = useNavigate();
   const { page } = useParams<{ page?: string }>();
   const location = useLocation();
@@ -36,7 +37,7 @@ const CarManage: React.FC = () => {
     placeholderData: (previousData) => previousData,
   });
 
-  const total = data?.total ?? 0;
+  const totalPage = data?.totalPage ?? 0;
   const carData = data?.data || [];
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -58,7 +59,7 @@ const CarManage: React.FC = () => {
   };
 
   const handleRedirectDetail = (id: number) => {
-    navigate(`/car-manage/detail/${id}`);
+    navigate(`${urlMain}/detail/${id}`);
   };
 
   useEffect(() => {
@@ -133,10 +134,10 @@ const CarManage: React.FC = () => {
                   {index + 1 + currentPage * ITEMS_PER_PAGE}
                 </td>
                 <td>
-                  <img className={styles.img} loading="lazy" src={car.image?.urlImg} alt="" />
+                  <DefaultImage src={car.image?.urlImg} />
                 </td>
                 <td>{car.licensePlate}</td>
-                <td>{car.capacity} chỗ</td>
+                <td>{car.capacity ? `${car.capacity} chỗ` : "N/A"} </td>
                 <td>{car.type}</td>
                 <td>
                   <div className={styles["btn-list"]}>
@@ -163,7 +164,7 @@ const CarManage: React.FC = () => {
 
       <div className={styles.pagination}>
         <Pagination
-          pageCount={Math.ceil(total / ITEMS_PER_PAGE)}
+          pageCount={totalPage}
           onPageChange={handlePageClick}
           currentPage={currentPage}
         />
@@ -172,4 +173,4 @@ const CarManage: React.FC = () => {
   );
 };
 
-export default CarManage;
+export default ManageCar;
