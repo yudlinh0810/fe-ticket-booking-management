@@ -120,8 +120,8 @@ const ManageDriver: React.FC = () => {
                 </td>
                 <td>{driver.fullName}</td>
                 <td>{driver.phone}</td>
-                <td>{driver.licenseNumber}</td>
                 <td>{dateTimeTransform(driver.dateBirth, "DD/MM/YYYY", false)}</td>
+                <td>{dateTimeTransform(driver.experienceYears, "DD/MM/YYYY", false)}</td>
                 <td>
                   <div className={styles["btn-list"]}>
                     <Link
