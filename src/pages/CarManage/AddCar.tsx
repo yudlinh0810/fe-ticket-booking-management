@@ -1,12 +1,12 @@
 import styles from "../../styles/addCar.module.scss";
 import { addCar } from "../../services/car.service";
 import { Link } from "react-router-dom";
-import ImageListCUD, { ImageType } from "../../components/ImageListCUD";
+import ImageListCUD, { ImageCUDType } from "../../components/ImageListCUD";
 import { useEffect, useState } from "react";
 import { useCustomNavMutation } from "../../hooks/useCustomQuery";
 
 const AddCar = () => {
-  const [images, setImages] = useState<ImageType[]>([]);
+  const [images, setImages] = useState<ImageCUDType[]>([]);
 
   const [form, setForm] = useState({
     licensePlate: "",
