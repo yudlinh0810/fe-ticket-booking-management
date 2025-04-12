@@ -3,18 +3,18 @@
 
   height: 4.75rem;
   border: 1px solid var(--bright-blue);
+  border-right: none;
+
+  &:hover {
+    border-right: 1px solid var(--bright-blue);
+  }
 
   .img {
     width: 5.5rem;
-    // height: 4.75rem;
     border-right: 1px solid var(--bright-blue);
 
     object-fit: cover;
     aspect-ratio: 16/9;
-
-    // &:hover {
-    //   border-right: 1px solid var(--bright-blue);
-    // }
   }
 
   .actions {

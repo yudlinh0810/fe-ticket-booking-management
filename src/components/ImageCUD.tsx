@@ -2,6 +2,7 @@ import styles from "../styles/imageCUD.module.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare, faStar, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { memo, useRef, useState } from "react";
+import DefaultImage from "./DefaultImage";
 
 interface ImageCUDProps {
   id?: number;
@@ -59,7 +60,7 @@ const ImageCUD: React.FC<ImageCUDProps> = ({
   console.log(imageFile);
   return (
     <div className={styles.container}>
-      <img src={previewImgFile || ""} alt={`Hình ảnh `} className={`${styles.img}`} />
+      <DefaultImage src={previewImgFile ?? ""} />
       {imgCUD ? (
         <div className={styles.actions}>
           <button

@@ -2,7 +2,7 @@ import { memo, useRef } from "react";
 import ImageCUD from "./ImageCUD";
 import styles from "../styles/imageListCUD.module.scss";
 
-export interface ImageType {
+export interface ImageCUDType {
   id: number;
   image: File;
   previewImg: string;
@@ -10,8 +10,8 @@ export interface ImageType {
 }
 
 interface ImageListCUDProps {
-  images: ImageType[];
-  setImages: React.Dispatch<React.SetStateAction<ImageType[]>>;
+  images: ImageCUDType[];
+  setImages: React.Dispatch<React.SetStateAction<ImageCUDType[]>>;
 }
 
 const ImageListCUD: React.FC<ImageListCUDProps> = ({ images, setImages }) => {

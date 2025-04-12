@@ -5,16 +5,13 @@
   border: 1px solid var(--bright-blue);
 
   .img {
-    width: 5.5rem;
-    // height: 4.75rem;
-    border-right: 1px solid var(--bright-blue);
+    width: 4rem;
+    height: 4rem;
+    border: 1px solid var(--bright-blue);
+    border-radius: 0.5rem;
 
-    object-fit: cover;
     aspect-ratio: 16/9;
-
-    // &:hover {
-    //   border-right: 1px solid var(--bright-blue);
-    // }
+    object-fit: cover;
   }
 
   .actions {

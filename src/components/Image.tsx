@@ -2,7 +2,7 @@ import styles from "../styles/image.module.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare, faStar, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { ChangeEvent, useRef, useState } from "react";
-import { IsMain } from "../types/car.type";
+import { IsMain } from "../types/car";
 import { deleteImgCar, updateImgCar } from "../services/car.service";
 import { useCustomMutation } from "../hooks/useCustomQuery";
 
