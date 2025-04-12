@@ -1,4 +1,4 @@
-import styles from "../styles/ImageList.module.scss";
+import styles from "../styles/imageList.module.scss";
 import DefaultImage from "./DefaultImage";
 
 interface ImageData {
