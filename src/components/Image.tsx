@@ -2,7 +2,6 @@ import styles from "../styles/image.module.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare, faStar, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { ChangeEvent, useRef, useState } from "react";
-import { IsMain } from "../types/bus";
 import { deleteImgBus, updateImgBus } from "../services/bus.service";
 import { useCustomMutation } from "../hooks/useCustomQuery";
 
@@ -10,7 +9,7 @@ interface ImageProps {
   id: number;
   urlImg: string;
   urlPublicImg: string;
-  isMain: IsMain;
+  isMain: 1 | 0;
   imgCUD: boolean;
 }
 
