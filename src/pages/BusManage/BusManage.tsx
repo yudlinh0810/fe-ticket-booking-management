@@ -2,16 +2,16 @@ import React, { useEffect, useState } from "react";
 import { GoTriangleDown } from "react-icons/go";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
-import styles from "../../styles/manageCar.module.scss";
-import { getCarList } from "../../services/car.service";
+import styles from "../../styles/busManage.module.scss";
+import { getBusList } from "../../services/bus.service";
 import { Link } from "react-router-dom";
 import Pagination from "../../components/Pagination";
 import Loading from "../../components/Loading";
 import DefaultImage from "../../components/DefaultImage";
 
-const ITEMS_PER_PAGE = 10;
+const ITEMS_PER_PAGE = 3;
 
-const ManageCar: React.FC = () => {
+const BusManage: React.FC = () => {
   const navigate = useNavigate();
   const { page } = useParams<{ page?: string }>();
   const location = useLocation();
@@ -22,7 +22,7 @@ const ManageCar: React.FC = () => {
     page ? Math.max(1, parseInt(page, 10)) - 1 : 0
   );
 
-  const urlMain = "/car-manage";
+  const urlMain = "/bus-manage";
 
   // Khi URL thay đổi, cập nhật currentPage
   useEffect(() => {
@@ -31,14 +31,14 @@ const ManageCar: React.FC = () => {
   }, [location.pathname]);
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ["carList", selectedType, searchTerm, currentPage],
-    queryFn: () => getCarList({ offset: currentPage * ITEMS_PER_PAGE, limit: ITEMS_PER_PAGE }),
+    queryKey: ["busList", selectedType, searchTerm, currentPage],
+    queryFn: () => getBusList({ offset: currentPage * ITEMS_PER_PAGE, limit: ITEMS_PER_PAGE }),
     staleTime: 5 * 60 * 10,
     placeholderData: (previousData) => previousData,
   });
 
   const totalPage = data?.totalPage ?? 0;
-  const carData = data?.data || [];
+  const busData = data?.data || [];
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value.trim());
@@ -55,7 +55,7 @@ const ManageCar: React.FC = () => {
   const handlePageClick = (selectedItem: { selected: number }) => {
     const newPage = selectedItem.selected + 1;
     setCurrentPage(selectedItem.selected); // Cập nhật state ngay lập tức
-    navigate(newPage > 1 ? `/car-manage/page/${newPage}` : `/car-manage`, { replace: true });
+    navigate(newPage > 1 ? `/bus-manage/page/${newPage}` : `/bus-manage`, { replace: true });
   };
 
   const handleRedirectDetail = (id: number) => {
@@ -86,7 +86,7 @@ const ManageCar: React.FC = () => {
               <div className={styles.radio}>
                 <input
                   type="radio"
-                  name="car_type"
+                  name="bus_type"
                   id={type}
                   value={type}
                   onChange={handleSelectedTypeChange}
@@ -99,7 +99,7 @@ const ManageCar: React.FC = () => {
             </div>
           ))}
         </div>
-        <Link to={"/car-manage/add"} className={styles["btn-add"]}>
+        <Link to={"/bus-manage/add"} className={styles["btn-add"]}>
           Thêm Xe
         </Link>
       </div>
@@ -128,27 +128,27 @@ const ManageCar: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {carData.map((car, index) => (
+            {busData.map((bus, index) => (
               <tr key={index}>
-                <td className={styles["car-id"]} onClick={() => handleRedirectDetail(car.id)}>
+                <td className={styles["bus-id"]} onClick={() => handleRedirectDetail(bus.id)}>
                   {index + 1 + currentPage * ITEMS_PER_PAGE}
                 </td>
                 <td>
-                  <DefaultImage src={car.image?.urlImg} />
+                  <DefaultImage src={bus.image?.urlImg} />
                 </td>
-                <td>{car.licensePlate}</td>
-                <td>{car.capacity ? `${car.capacity} chỗ` : "N/A"} </td>
-                <td>{car.type}</td>
+                <td>{bus.licensePlate}</td>
+                <td>{bus.capacity ? `${bus.capacity} chỗ` : "N/A"} </td>
+                <td>{bus.type}</td>
                 <td>
                   <div className={styles["btn-list"]}>
                     <Link
-                      to={`${urlMain}/detail/${car.id}`}
+                      to={`${urlMain}/detail/${bus.licensePlate}`}
                       className={`${styles["btn-detail"]} ${styles.btn}`}
                     >
                       Chi tiết
                     </Link>
                     <Link
-                      to={`${urlMain}/update/${car.id}`}
+                      to={`${urlMain}/update/${bus.licensePlate}`}
                       className={`${styles["btn-edit"]} ${styles.btn}`}
                     >
                       Cập nhật
@@ -173,4 +173,4 @@ const ManageCar: React.FC = () => {
   );
 };
 
-export default ManageCar;
+export default BusManage;
