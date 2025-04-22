@@ -32,7 +32,12 @@ const DefaultImage: React.FunctionComponent<DefaultImageProps> = ({
       : updateType === "co-driver"
       ? updateImgCoDriver
       : updateImgDriver;
-  const message = updateType === "customer" ? "Cập nhật ảnh đại diện" : "Cập nhật ảnh tài xế";
+  const message =
+    updateType === "customer"
+      ? "Cập nhật ảnh đại diện"
+      : updateType === "driver"
+      ? "Cập nhật ảnh tài xế"
+      : "Cập nhật ảnh phụ xe";
 
   const mutateUpdate = useCustomNavMutation(
     updateFunc,

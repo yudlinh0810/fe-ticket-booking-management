@@ -24,6 +24,10 @@ import { handleTokenExpiration } from "./utils/handleTokenExpiration ";
 import useClientWidth from "./utils/useClientWidth.util";
 import BusManage from "./pages/BusManage/BusManage";
 import TripManage from "./pages/TripManage/TripManage";
+import ManageCoDriver from "./pages/CoDriverManage/ManageCoDriver";
+import DetailCoDriver from "./pages/CoDriverManage/DetailCoDriver";
+import AddCoDriver from "./pages/CoDriverManage/AddCoDriver";
+import UpdateCoDriver from "./pages/CoDriverManage/UpdateCoDriver";
 
 function App() {
   useClientWidth();
@@ -67,6 +71,15 @@ function App() {
                 <Route path="detail/:id" element={<DetailCustomer />} />
                 <Route path="add" element={<AddCustomer />} />
                 <Route path="update/:id" element={<UpdateCustomer />} />
+              </Route>
+
+              {/* Co-driver Manage */}
+              <Route path="/co-driver-manage" element={<ManageLayout />}>
+                <Route index element={<ManageCoDriver />} />
+                <Route path="page/:page" element={<ManageCoDriver />} />
+                <Route path="detail/:id" element={<DetailCoDriver />} />
+                <Route path="add" element={<AddCoDriver />} />
+                <Route path="update/:id" element={<UpdateCoDriver />} />
               </Route>
 
               {/* Driver Manage */}

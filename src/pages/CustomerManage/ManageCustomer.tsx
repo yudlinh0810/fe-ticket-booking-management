@@ -109,7 +109,7 @@ const ManageCustomer: React.FC = () => {
             {customerData.map((customer, index) => (
               <tr key={index}>
                 <td
-                  className={styles["customer-id"]}
+                  className={styles["user-id"]}
                   onClick={() => customer.id && handleRedirectDetail(customer.id)}
                 >
                   {index + 1 + currentPage * ITEMS_PER_PAGE}

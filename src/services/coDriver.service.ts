@@ -1,4 +1,4 @@
-import { CustomerType } from "../types/customer";
+import { CoDriverType } from "../types/coDriver";
 import { ArrangeType, ImageType } from "../types/type";
 import { bookTicketAPI } from "./customize.service";
 
@@ -12,7 +12,7 @@ export const getCoDriverList = async ({
   arrangeType: ArrangeType;
 }) => {
   return await bookTicketAPI
-    .get<{ data: CustomerType[]; total: number }>(
+    .get<{ data: CoDriverType[]; total: number }>(
       `/co-driver/get-all?offset=${offset}&limit=${limit}&arrangeType=${arrangeType}`
     )
     .then((res) => res.data);
@@ -20,7 +20,7 @@ export const getCoDriverList = async ({
 
 export const fetchCoDriver = async (id: string) => {
   return await bookTicketAPI
-    .get<CustomerType>(`/co-driver/get-detail/${id}`)
+    .get<CoDriverType>(`/co-driver/get-detail/${id}`)
     .then((res) => res.data);
 };
 

@@ -1,4 +1,4 @@
-export type CustomerType = {
+export type CoDriverType = {
   id?: number;
   providerId?: string;
   email: string;
@@ -10,7 +10,7 @@ export type CustomerType = {
   dateBirth?: string;
   address?: string;
   provider?: string;
-  role: "customer";
+  role: "co-driver";
   createAt: string;
   updateAt: string;
 };
