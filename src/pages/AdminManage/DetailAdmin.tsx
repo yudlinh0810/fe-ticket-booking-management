@@ -1,35 +1,34 @@
 import styles from "../../styles/detailCD.module.scss";
 import { Link } from "react-router-dom";
 import { dateTimeTransform } from "../../utils/transform";
-import { fetchCoDriver } from "../../services/coDriver.service";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router";
 import Loading from "../../components/Loading";
 import { useEffect } from "react";
-import DefaultImage from "../../components/DefaultImage";
+import { fetchAdmin } from "../../services/admin.service";
 
-const DetailCoDriver = () => {
+const DetailAdmin = () => {
   const { id } = useParams();
   const idFetch = id ?? "0";
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ["coDriver", idFetch],
-    queryFn: () => fetchCoDriver(idFetch),
+    queryKey: ["admin", idFetch],
+    queryFn: () => fetchAdmin(idFetch),
     staleTime: 5 * 60 * 100,
   });
 
-  const coDriver = data ?? null;
+  const admin = data ?? null;
 
-  useEffect(() => {}, [coDriver]);
+  useEffect(() => {}, [admin]);
 
   if (isLoading) return <Loading />;
   if (error) return <p className={styles.error}>Lỗi khi tải dữ liệu</p>;
-  if (!coDriver) return <p className={styles.error}>Không tìm thấy thông tin khách hàng</p>;
+  if (!admin) return <p className={styles.error}>Không tìm thấy thông tin admins</p>;
 
   return (
     <div className={styles.container}>
       <div className={styles["feat-back"]}>
-        <Link to={`/co-driver-manage`} className={styles["btn-back"]}>
+        <Link to={`/admin-manage`} className={styles["btn-back"]}>
           Quay lại
         </Link>
       </div>
@@ -38,7 +37,7 @@ const DetailCoDriver = () => {
           <h2 className={styles["content-title"]}>Thông tin chi tiết</h2>
           <div className={styles["feat-list"]}>
             <Link
-              to={`/co-driver-manage/update/${coDriver?.id}`}
+              to={`/admin-manage/update/${admin?.id}`}
               className={`${styles["btn-update"]} ${styles["feat-item"]}`}
             >
               Cập nhật
@@ -47,24 +46,10 @@ const DetailCoDriver = () => {
           </div>
         </div>
         <ul className={styles.detail}>
-          <li className={`${styles["item__img"]} ${styles.group}`}>
-            <p className={styles.title}>Ảnh đại diện</p>
-            <div className={styles.img}>
-              <DefaultImage src={coDriver?.urlImg} />
-            </div>
-          </li>
           {[
-            { label: "email", value: coDriver?.email },
-            { label: "họ và tên", value: coDriver?.fullName },
-            { label: "giới tính", value: coDriver?.sex },
-            { label: "số điện thoại", value: coDriver?.phone },
-            {
-              label: "ngày sinh",
-              value: dateTimeTransform(coDriver?.dateBirth, "DD-MM-YYYY", false),
-            },
-            { label: "địa chỉ", value: coDriver?.address },
-            { label: "ngày tạo", value: dateTimeTransform(coDriver?.createAt, "DD-MM-YYYY") },
-            { label: "ngày cập nhật", value: dateTimeTransform(coDriver?.updateAt, "DD-MM-YYYY") },
+            { label: "email", value: admin?.email },
+            { label: "ngày tạo", value: dateTimeTransform(admin?.createAt, "DD-MM-YYYY") },
+            { label: "ngày cập nhật", value: dateTimeTransform(admin?.updateAt, "DD-MM-YYYY") },
           ].map((item, index) => (
             <li key={index} className={styles.group}>
               <p className={styles.title}>{item.label}</p>
@@ -77,4 +62,4 @@ const DetailCoDriver = () => {
   );
 };
 
-export default DetailCoDriver;
+export default DetailAdmin;

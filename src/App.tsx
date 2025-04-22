@@ -28,6 +28,10 @@ import ManageCoDriver from "./pages/CoDriverManage/ManageCoDriver";
 import DetailCoDriver from "./pages/CoDriverManage/DetailCoDriver";
 import AddCoDriver from "./pages/CoDriverManage/AddCoDriver";
 import UpdateCoDriver from "./pages/CoDriverManage/UpdateCoDriver";
+import ManageAdmin from "./pages/AdminManage/ManageAdmin";
+import DetailAdmin from "./pages/AdminManage/DetailAdmin";
+import AddAdmin from "./pages/AdminManage/AddAdmin";
+import UpdateAdmin from "./pages/AdminManage/UpdateAdmin";
 
 function App() {
   useClientWidth();
@@ -89,6 +93,15 @@ function App() {
                 <Route path="detail/:id" element={<DetailDriver />} />
                 <Route path="add" element={<AddDriver />} />
                 <Route path="update/:id" element={<UpdateDriver />} />
+              </Route>
+
+              {/* Admin Manage */}
+              <Route path="/admin-manage" element={<ManageLayout />}>
+                <Route index element={<ManageAdmin />} />
+                <Route path="page/:page" element={<ManageAdmin />} />
+                <Route path="detail/:id" element={<DetailAdmin />} />
+                <Route path="add" element={<AddAdmin />} />
+                <Route path="update/:id" element={<UpdateAdmin />} />
               </Route>
 
               {/* Trip Manage */}

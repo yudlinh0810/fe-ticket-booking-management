@@ -9,7 +9,6 @@ export type CoDriverType = {
   phone?: string;
   dateBirth?: string;
   address?: string;
-  provider?: string;
   role: "co-driver";
   createAt: string;
   updateAt: string;

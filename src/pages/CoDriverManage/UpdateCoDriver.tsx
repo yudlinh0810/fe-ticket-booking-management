@@ -36,8 +36,8 @@ const UpdateCoDriver = () => {
   const updateMutate = useCustomNavMutation(
     updateInfoCoDriver,
     "/co-driver-manage",
-    "Cập nhật thông tin khách hàng thành công",
-    "Cập nhật thông tin khách hàng thất bại"
+    "Cập nhật thông tin phụ xe thành công",
+    "Cập nhật thông tin phụ xe thất bại"
   );
 
   const handleChangeValue = (
@@ -186,15 +186,6 @@ const UpdateCoDriver = () => {
           </li>
 
           {/* Trường chỉ đọc */}
-          <li className={styles.item}>
-            <p className={styles.title}>Đăng ký bằng</p>
-            <input
-              type="text"
-              className={styles.data}
-              value={coDriver.provider ?? "N/A"}
-              readOnly
-            />
-          </li>
           <li className={styles.item}>
             <p className={styles.title}>Ngày tạo</p>
             <input
