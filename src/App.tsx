@@ -3,11 +3,21 @@ import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import PrivateRoute from "./components/PrivateRoute";
+import useClientWidth from "./hooks/useClientWidth.util";
 import Layout from "./layouts/Layout";
 import ManageLayout from "./layouts/ManageLayout";
+import AddAdmin from "./pages/AdminManage/AddAdmin";
+import DetailAdmin from "./pages/AdminManage/DetailAdmin";
+import ManageAdmin from "./pages/AdminManage/ManageAdmin";
+import UpdateAdmin from "./pages/AdminManage/UpdateAdmin";
 import AddCar from "./pages/BusManage/AddBus";
+import BusManage from "./pages/BusManage/BusManage";
 import DetailCar from "./pages/BusManage/DetailBus";
 import UpdateCar from "./pages/BusManage/UpdateBus";
+import AddCoDriver from "./pages/CoDriverManage/AddCoDriver";
+import DetailCoDriver from "./pages/CoDriverManage/DetailCoDriver";
+import ManageCoDriver from "./pages/CoDriverManage/ManageCoDriver";
+import UpdateCoDriver from "./pages/CoDriverManage/UpdateCoDriver";
 import AddCustomer from "./pages/CustomerManage/AddCustomer";
 import DetailCustomer from "./pages/CustomerManage/DetailCustomer";
 import ManageCustomer from "./pages/CustomerManage/ManageCustomer";
@@ -17,21 +27,12 @@ import DetailDriver from "./pages/DriverManage/DetailDriver";
 import ManageDriver from "./pages/DriverManage/ManageDriver";
 import UpdateDriver from "./pages/DriverManage/UpdateDriver";
 import Login from "./pages/Login";
+import AddTrip from "./pages/TripManage/AddTrip";
+import TripManage from "./pages/TripManage/TripManage";
 import "./styles/app.scss";
 import "./styles/reset.scss";
 import "./styles/root.scss";
 import { handleTokenExpiration } from "./utils/handleTokenExpiration ";
-import useClientWidth from "./utils/useClientWidth.util";
-import BusManage from "./pages/BusManage/BusManage";
-import TripManage from "./pages/TripManage/TripManage";
-import ManageCoDriver from "./pages/CoDriverManage/ManageCoDriver";
-import DetailCoDriver from "./pages/CoDriverManage/DetailCoDriver";
-import AddCoDriver from "./pages/CoDriverManage/AddCoDriver";
-import UpdateCoDriver from "./pages/CoDriverManage/UpdateCoDriver";
-import ManageAdmin from "./pages/AdminManage/ManageAdmin";
-import DetailAdmin from "./pages/AdminManage/DetailAdmin";
-import AddAdmin from "./pages/AdminManage/AddAdmin";
-import UpdateAdmin from "./pages/AdminManage/UpdateAdmin";
 
 function App() {
   useClientWidth();
@@ -107,6 +108,7 @@ function App() {
               {/* Trip Manage */}
               <Route path="/trip-manage" element={<ManageLayout />}>
                 <Route index element={<TripManage />} />
+                <Route path="add" element={<AddTrip />} />
               </Route>
             </Route>
           </Routes>

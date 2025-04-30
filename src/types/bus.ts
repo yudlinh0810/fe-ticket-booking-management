@@ -1,9 +1,10 @@
+export type TypeBus = "xe thường" | "xe giường nằm";
 export interface BusType {
   id: number;
   // name?: string;
   licensePlate: string;
   capacity: number;
-  type: "Xe thường" | "Xe giường nằm";
+  type: TypeBus;
   // status?: "Sắp khởi hành" | "Đang chạy" | "Bảo trì";
   image?: ImgBus;
   images?: ImgBus[];

@@ -7,9 +7,9 @@
   flex-wrap: wrap;
   padding: 1.75rem;
 
-  @include mix.responsive(mobile) {
-    flex-direction: column;
-  }
+  // @include mix.responsive(mobile) {
+  //   flex-direction: column;
+  // }
 }
 
 .floor {

@@ -1,182 +1,337 @@
-import styles from "../../styles/addCD.module.scss";
+// import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { ChangeEvent, useCallback, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { useRef, useState } from "react";
+import DynamicCoDriverSelect from "../../components/DynamicCoDriverSelect";
+import InputDropDownList from "../../components/InputDropDownList";
+import InputDropDownListCD from "../../components/InputDropDownListCD";
+import Loading from "../../components/Loading";
+import { SeatType } from "../../components/Seat";
+import SeatMapNormal from "../../components/SeatMapNormal";
+import SeatMapSleeper from "../../components/SeatMapSleeper";
 import { useCustomNavMutation } from "../../hooks/useCustomQuery";
-import { addDriver } from "../../services/driver.service";
+import { addLocation, deleteLocation, getAllLocation } from "../../services/location.service";
+import { addTrip, getFormData } from "../../services/trip.service";
+import styles from "../../styles/addTrip.module.scss";
+import { TypeBus } from "../../types/bus";
+import { CoAndDriverType } from "../../types/trip";
 
-const AddDriver = () => {
-  const dateBirthRef = useRef<HTMLInputElement>(null);
-  const experienceYearRef = useRef<HTMLInputElement>(null);
+const generateNormalSeats = (): SeatType[] => {
+  const seats: SeatType[] = [];
+  for (let i = 1; i <= 14; i++) {
+    const padded = i.toString().padStart(2, "0");
+    seats.push({ position: `A${padded}`, status: "available" });
+    seats.push({ position: `B${padded}`, status: "available" });
+  }
+  return seats;
+};
 
-  const [form, setForm] = useState({
-    fullName: "",
-    phone: "",
-    address: "",
-    dateBirth: "",
-    email: "",
-    sex: "",
-    password: "",
-    experienceYears: "",
-    licenseNumber: "",
+const generateSleeperSeats = (): SeatType[] => {
+  const seats: SeatType[] = [];
+  for (let i = 1; i <= 20; i++) {
+    const padded = i.toString().padStart(2, "0");
+    seats.push({ position: `A${padded}`, status: "available", floor: "bottom" });
+    seats.push({ position: `B${padded}`, status: "available", floor: "top" });
+  }
+  return seats;
+};
+
+type FormType = {
+  tripName: string;
+  carId: number;
+  driverId: number;
+  coDrivers: { id: number }[];
+  departureId: number;
+  arrivalId: number;
+  price: number;
+  startTime: string;
+  endTime: string;
+};
+
+const AddTrip = () => {
+  const [typeBus, setTypeBus] = useState<TypeBus | null>(null);
+  const startTimeRef = useRef<HTMLInputElement | null>(null);
+  const endTimeRef = useRef<HTMLInputElement | null>(null);
+
+  const {
+    data: formAddTripData,
+    isLoading: isFormAddTripLoading,
+    error: formAddTripError,
+  } = useQuery({
+    queryKey: ["formAddTrip"],
+    queryFn: () => getFormData(),
+    staleTime: 5 * 60 * 1000, // sửa lại 5 phút nếu bạn muốn 5 phút (vì bạn đang nhân sai)
   });
 
+  const {
+    data: locationsData,
+    isLoading: isLocationsLoading,
+    error: locationsError,
+  } = useQuery({
+    queryKey: ["locations"],
+    queryFn: () => getAllLocation(),
+    staleTime: 5 * 60 * 1000, // 5 phút
+  });
+
+  const [form, setForm] = useState<FormType>({
+    tripName: "",
+    carId: 0,
+    driverId: 0,
+    coDrivers: [],
+    departureId: 0,
+    arrivalId: 0,
+    price: 0,
+    startTime: "",
+    endTime: "",
+  });
+
+  const [seats, setSeats] = useState<SeatType[]>([]);
+
   const addMutate = useCustomNavMutation(
-    addDriver,
-    "/driver-manage",
-    "Thêm mới thành công",
-    "Thêm mới thất bại"
+    addTrip,
+    "/trip-manage",
+    "Thêm chuyến xe thành công",
+    "Thêm chuyến xe thất bại"
   );
 
-  const handleChangeValue = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = event.target;
-    setForm((prevForm) => {
-      return {
-        ...prevForm,
-        [name]: value,
-      };
-    });
-  };
-
-  const handleAddDriver = async () => {
-    const formData = new FormData();
-    formData.append("data", JSON.stringify(form));
-    addMutate.mutate(formData);
-  };
-
-  const handleClickInputDate = () => {
-    if (dateBirthRef.current) {
-      dateBirthRef.current.showPicker();
+  const handleClickStartTime = () => {
+    if (startTimeRef) {
+      startTimeRef.current?.showPicker();
     } else {
       return;
     }
   };
 
-  const handleClickInputExperienceYears = () => {
-    if (experienceYearRef.current) {
-      experienceYearRef.current.showPicker();
+  const handleClickEndTime = () => {
+    if (startTimeRef) {
+      endTimeRef.current?.showPicker();
     } else {
       return;
     }
   };
+
+  const handleAddTrip = async () => {
+    const data = {
+      form,
+      seats,
+    };
+
+    addMutate.mutate(data);
+  };
+
+  const handleSelectedBus = (selectedBus: string) => {
+    const detailBus = formAddTripData.cars.filter((car) => car.licensePlate === selectedBus)[0];
+    if (!detailBus) return;
+
+    setForm((prev) => ({ ...prev, carId: detailBus.id }));
+
+    setTypeBus(detailBus.type);
+
+    if (detailBus.type === "xe thường") {
+      setSeats(generateNormalSeats());
+    } else {
+      setSeats(generateSleeperSeats());
+    }
+  };
+
+  const handleSelectedSeat = useCallback((seatsUpdate) => {
+    setSeats(seatsUpdate);
+  }, []);
+
+  const handleSelectedDeparture = (selectedDeparture: string) => {
+    const getId = locationsData.filter((lo) => lo.name === selectedDeparture)[0].id;
+    setForm((prev) => ({ ...prev, departureId: getId }));
+  };
+
+  const handleSelectedArrival = (selectedArrival: string) => {
+    const getId = locationsData.filter((lo) => lo.name === selectedArrival)[0].id;
+    setForm((prev) => ({ ...prev, arrivalId: getId }));
+  };
+
+  const handleChangeValueForm = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleChangeFieldCoDriver = (fieldCoDrivers: CoAndDriverType[]) => {
+    setForm((prev) => ({ ...prev, coDrivers: fieldCoDrivers.map((cd) => ({ id: cd.id })) }));
+  };
+
+  const handleSelectedDriver = (selectedDriver: string) => {
+    const getPhone = selectedDriver.split("-")[1].trim();
+    setForm((prev) => ({
+      ...prev,
+      driverId: formAddTripData.drivers.filter((dr) => dr.phone === getPhone)[0].id,
+    }));
+  };
+
+  if (formAddTripError || locationsError) return <p>Lỗi khi tải dữ liệu</p>;
+  if (isFormAddTripLoading || isLocationsLoading) return <Loading />;
 
   return (
-    <div className={styles.container}>
-      <div className={styles["feats"]}>
-        <Link to={`/driver-manage`} className={`${styles["btn-back"]} ${styles.btn}`}>
-          Quay lại
-        </Link>
-        <button className={`${styles["btn-delete"]} ${styles.btn}`}>Xóa</button>
-      </div>
-
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          handleAddDriver();
-        }}
-        className={styles.form}
-      >
-        <div className={styles.title}>
-          <h2 className={styles["content-title"]}>Thêm mới chuyến xe</h2>
+    <div>
+      <div className={styles["add-trip-wrapper"]}>
+        <div className={styles["feats"]}>
+          <Link to={`/trip-manage`} className={`${styles["btn-back"]} ${styles.btn}`}>
+            Quay lại
+          </Link>
+          <button className={`${styles["btn-delete"]} ${styles.btn}`}>Xóa</button>
         </div>
-        <ul className={styles["form-group-list"]}>
-          {[
-            { label: "Email", name: "email", type: "text" },
-            { label: "Họ và tên", name: "fullName", type: "text" },
-          ].map((item, index) => (
-            <li key={index} className={styles["form-group-item"]}>
-              <p className={styles.title}>{item.label}</p>
-              <input
-                name={item.name}
-                type={item.type}
-                className={styles["form-control"]}
-                value={form[item.name as keyof typeof form]}
-                onChange={handleChangeValue}
-              />
-            </li>
-          ))}
 
-          <li className={styles["form-group-item"]}>
-            <p className={styles.title}>Giới tính</p>
-            <select
-              name="sex"
-              className={styles["form-control"]}
-              value={form.sex}
-              onChange={handleChangeValue}
-            >
-              <option>--- Chọn Giới Tính ---</option>
-              {["male", "female", "other"].map((item, index) => {
-                return (
-                  <option key={index} value={item}>
-                    {item}
-                  </option>
-                );
-              })}
-            </select>
-          </li>
-
-          {[
-            { label: "Ngày sinh", name: "dateBirth", type: "date" },
-            { label: "Số điện thoại", name: "phone", type: "text" },
-          ].map((item, index) => (
-            <li key={index} className={styles["form-group-item"]}>
-              <p className={styles.title}>{item.label}</p>
-              <input
-                ref={item.name === "dateBirth" ? dateBirthRef : null}
-                onClick={item.name === "dateBirth" ? handleClickInputDate : undefined}
-                name={item.name}
-                type={item.type}
-                className={styles["form-control"]}
-                value={form[item.name as keyof typeof form]}
-                onChange={handleChangeValue}
-              />
-            </li>
-          ))}
-
-          {/*  */}
-
-          {[
-            { label: "Mã Giấy phép lái xe", name: "licenseNumber", type: "text" },
-            { label: "Ngày cấp", name: "experienceYears", type: "date" },
-          ].map((item, index) => (
-            <li key={index} className={styles["form-group-item"]}>
-              <p className={styles.title}>{item.label}</p>
-              <input
-                ref={item.name === "experienceYears" ? experienceYearRef : null}
-                onClick={
-                  item.name === "experienceYears" ? handleClickInputExperienceYears : undefined
-                }
-                name={item.name}
-                type={item.type}
-                className={styles["form-control"]}
-                value={form[item.name as keyof typeof form]}
-                onChange={handleChangeValue}
-              />
-            </li>
-          ))}
-
-          <li className={styles["form-group-item"]}>
-            <p className={styles.title}>Địa chỉ</p>
-            <textarea
-              spellCheck={false}
-              rows={3}
-              name={"address"}
-              className={`${styles["form-control"]} ${styles.textarea}`}
-              value={form.address}
-              onChange={handleChangeValue}
-            />
-          </li>
-
-          <div className={styles["feat-add"]}>
-            <button type="submit" className={styles["btn-add"]}>
-              Thêm mới
-            </button>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleAddTrip();
+          }}
+          className={styles.form}
+        >
+          <div className={styles.title}>
+            <h2 className={styles["content-title"]}>Thêm chuyến xe</h2>
           </div>
-        </ul>
-      </form>
+          <ul className={styles["form-group-list"]}>
+            <li className={styles["form-group-item"]}>
+              <label htmlFor="trip-name" className={styles.title}>
+                Tên Xe khách{" "}
+              </label>
+              <input
+                id="trip-name"
+                type="text"
+                name="tripName"
+                className={styles["form-control"]}
+                placeholder="Nhập tên chuyến xe..."
+                onChange={handleChangeValueForm}
+              />
+            </li>
+
+            <li className={styles["form-group-item"]}>
+              <label htmlFor="bus" className={styles.title}>
+                Xe khách{" "}
+              </label>
+              <InputDropDownList
+                idHTML="bus"
+                list={formAddTripData.cars.map((c) => c.licensePlate)}
+                contentPlaceholder="Chọn xe khách..."
+                onSelected={handleSelectedBus}
+              />
+            </li>
+
+            <li className={styles["form-group-item"]}>
+              <label htmlFor="bus" className={styles.title}>
+                Tài xế
+              </label>
+              <InputDropDownList
+                idHTML="driver"
+                list={formAddTripData.drivers.map((c) => `${c.fullName} - ${c.phone}`)}
+                contentPlaceholder="Chọn tài xế..."
+                onSelected={handleSelectedDriver}
+              />
+            </li>
+
+            <li className={styles["form-group-item"]}>
+              <label className={styles.title}>Phụ xe</label>
+              <DynamicCoDriverSelect
+                coDrivers={formAddTripData.coDrivers}
+                onFieldsChange={handleChangeFieldCoDriver}
+              />
+            </li>
+            {typeBus === null ? null : typeBus === "xe thường" ? (
+              <li className={styles["form-group-item"]}>
+                <label className={styles.title}>Ghế</label>
+                <SeatMapNormal initialSeats={seats} onSelected={handleSelectedSeat} />
+              </li>
+            ) : (
+              <li className={styles["form-group-item"]}>
+                <label className={styles.title}>Ghế</label>
+                <SeatMapSleeper initialSeats={seats} onSelected={handleSelectedSeat} />
+              </li>
+            )}
+
+            <li className={styles["form-group-item"]}>
+              <label htmlFor="departure" className={styles.title}>
+                Địa điểm khởi hành{" "}
+              </label>
+              <InputDropDownListCD
+                idHTML="departure"
+                titleModal="địa điểm"
+                list={locationsData.map((loc) => ({ id: loc.id, value: loc.name }))}
+                contentPlaceholder="Nhập điểm đi"
+                onSelected={handleSelectedDeparture}
+                funcAddItem={addLocation}
+                funcDelItem={deleteLocation}
+              />
+            </li>
+
+            <li className={styles["form-group-item"]}>
+              <label htmlFor="start-time" className={styles.title}>
+                Thời gian khởi hành{" "}
+              </label>
+              <input
+                ref={startTimeRef}
+                id="start-time"
+                type="datetime-local"
+                name="startTime"
+                className={styles["form-control"]}
+                value={form.startTime}
+                onChange={(e) => handleChangeValueForm(e)}
+                onClick={handleClickStartTime}
+              />
+            </li>
+            {/*  */}
+            <li className={styles["form-group-item"]}>
+              <label htmlFor="arrival" className={styles.title}>
+                Địa điểm đón{" "}
+              </label>
+              <InputDropDownListCD
+                idHTML="arrival"
+                titleModal={"Địa điểm"}
+                list={locationsData.map((loc) => ({ id: loc.id, value: loc.name }))}
+                contentPlaceholder="Nhập điểm đón"
+                onSelected={handleSelectedArrival}
+                funcAddItem={addLocation}
+                funcDelItem={deleteLocation}
+              />
+            </li>
+
+            <li className={styles["form-group-item"]}>
+              <label htmlFor="end-time" className={styles.title}>
+                Thời gian kết thúc{" "}
+              </label>
+              <input
+                ref={endTimeRef}
+                id="end-time"
+                type="datetime-local"
+                name="endTime"
+                className={styles["form-control"]}
+                value={form.endTime}
+                onChange={(e) => handleChangeValueForm(e)}
+                onClick={handleClickEndTime}
+              />
+            </li>
+
+            <li className={styles["form-group-item"]}>
+              <label htmlFor="price" className={styles.title}>
+                Giá tiền cho mỗi ghế{" "}
+              </label>
+              <input
+                id="price"
+                type="number"
+                name="price"
+                className={styles["form-control"]}
+                value={form.price}
+                onChange={(e) => handleChangeValueForm(e)}
+              />
+            </li>
+
+            <div className={styles.action}>
+              <button type="submit" className={styles["btn-add"]}>
+                Thêm mới
+              </button>
+            </div>
+          </ul>
+        </form>
+      </div>
     </div>
   );
 };
 
-export default AddDriver;
+export default AddTrip;

@@ -37,7 +37,7 @@ const ManageCoDriver: React.FC = () => {
         arrangeType: arrangeType,
       }),
     staleTime: 5 * 60 * 10,
-    placeholderData: (previousData) => previousData,
+    // placeholderData: (previousData) => previousData,
   });
 
   const total = data?.total ?? 0;
