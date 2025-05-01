@@ -17,3 +17,20 @@ export interface FormDataType {
   drivers: CoAndDriverType[];
   coDrivers: CoAndDriverType[];
 }
+
+export interface TripData {
+  id: number;
+  tripName: string;
+  startTime: string; // ISO string hoặc bạn có thể dùng Date nếu parse trước
+  endTime: string;
+  status: "sẵn sàng" | "sắp khởi hành" | "đang chạy" | "bảo trì";
+  price: number;
+  createAt: string;
+  updateAt: string;
+  licensePlate: string | null;
+  driverName: string | null;
+  departureLocation: string | null;
+  arrivalLocation: string | null;
+  totalSeatAvailable: number;
+  totalSeatBooked: number;
+}

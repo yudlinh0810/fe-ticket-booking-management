@@ -1,10 +1,23 @@
 import { BusType } from "../types/bus";
+import { ArrangeType } from "../types/type";
 import { bookTicketAPI } from "./customize.service";
 
-export const getBusList = async ({ offset, limit }: { offset: number; limit: number }) => {
+export const getBusList = async ({
+  offset,
+  limit,
+  arrangeType,
+  licensePlateSearch,
+  type,
+}: {
+  offset: number;
+  limit: number;
+  arrangeType: ArrangeType;
+  licensePlateSearch: string;
+  type: "xe-thuong" | "xe-giuong-nam" | "all";
+}) => {
   return await bookTicketAPI
     .get<{ data: BusType[]; total: number; totalPage: number }>(
-      `/bus/get-all?offset=${offset}&limit=${limit}`
+      `/bus/get-all?license_plate=${licensePlateSearch}&type=${type}&offset=${offset}&limit=${limit}&arrangeType=${arrangeType}`
     )
     .then((res) => res.data);
 };
