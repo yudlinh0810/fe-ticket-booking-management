@@ -1,83 +1,87 @@
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
-import useThemeStore from "../store/useThemeStore"; // store zustand của bạn
-import { FaHome, FaClock, FaHeart, FaBars } from "react-icons/fa";
-import { MdSubscriptions, MdPlaylistPlay } from "react-icons/md";
-import { BsPlayCircle } from "react-icons/bs";
-import styles from "../styles/Sidebar.module.scss";
+import { FaBars, FaBus, FaHome, FaTicketAlt, FaUsers, FaUserTie } from "react-icons/fa";
+import { RiAdminFill, RiUserStarFill } from "react-icons/ri";
+import styled from "../styles/Sidebar.module.scss";
+import { useLocation } from "react-router";
 
 const Sidebar = () => {
-  const { theme, toggleTheme } = useThemeStore();
+  const location = useLocation();
   const [collapsed, setCollapsed] = useState(false);
 
-  const toggleSidebar = () => {
+  const handleToggleSidebar = () => {
     setCollapsed(!collapsed);
   };
 
+  if (location.pathname === "/login") return null;
+
   return (
-    <div
-      className={`${styles.Sidebar} ${collapsed ? styles.collapsed : ""} ${
-        theme ? styles.dark : ""
-      }`}
-    >
-      <div className={styles.topSection}>
-        <button className={styles.toggleBtn} onClick={toggleSidebar}>
+    <div className={`${collapsed ? styled["collapsed"] : styled["side-bar"]}`}>
+      <div className={styled["side-bar__top-section"]}>
+        <button className={styled["side-bar__toggle-btn"]} onClick={handleToggleSidebar}>
           <FaBars />
         </button>
-        {!collapsed && <span className={styles.logo}>YouTube</span>}
+        <span className={styled["side-bar__logo"]}>YudLinBus</span>
       </div>
 
-      <nav className={styles.menu}>
-        <ul>
-          <li>
-            <NavLink to="/">
-              <FaHome /> {!collapsed && "Trang chủ"}
+      <nav className={styled["side-bar__menu"]}>
+        <ul className={styled.list}>
+          <li className={styled["side-bar__menu-item"]}>
+            <NavLink to="/" className={styled["side-bar__menu-link"]}>
+              <FaHome className={styled.icon} />
+              <span className={styled["side-bar__section-title"]}>Trang chủ</span>
             </NavLink>
           </li>
-          <li>
-            <NavLink to="/shorts">
-              <BsPlayCircle /> {!collapsed && "Shorts"}
+          <li className={styled["side-bar__menu-item"]}>
+            <NavLink to="/customer-manage" className={styled["side-bar__menu-link"]}>
+              <FaUsers className={styled.icon} />
+              <span className={styled["side-bar__section-title"]}>Quản lý Khách hàng</span>
             </NavLink>
           </li>
-          <li>
-            <NavLink to="/subscriptions">
-              <MdSubscriptions /> {!collapsed && "Kênh đăng ký"}
+          <li className={styled["side-bar__menu-item"]}>
+            <NavLink to="/admin-manage" className={styled["side-bar__menu-link"]}>
+              <RiAdminFill className={styled.icon} />
+              <span className={styled["side-bar__section-title"]}>Quản lý quản trị viên</span>
             </NavLink>
           </li>
-        </ul>
-
-        <hr />
-
-        <div className={styles.sectionTitle}>{!collapsed && "Bạn"}</div>
-        <ul>
-          <li>
-            <NavLink to="/history">
-              <FaClock /> {!collapsed && "Video đã xem"}
+          <li className={styled["side-bar__menu-item"]}>
+            <NavLink to="/driver-manage" className={styled["side-bar__menu-link"]}>
+              <FaUserTie className={styled.icon} />
+              <span className={styled["side-bar__section-title"]}>Quản lý tài xế</span>
             </NavLink>
           </li>
-          <li>
-            <NavLink to="/playlists">
-              <MdPlaylistPlay /> {!collapsed && "Danh sách phát"}
+          <li className={styled["side-bar__menu-item"]}>
+            <NavLink to="/co-driver-manage" className={styled["side-bar__menu-link"]}>
+              <RiUserStarFill className={styled.icon} />
+              <span className={styled["side-bar__section-title"]}>Quản lý phụ xe</span>
             </NavLink>
           </li>
-          <li>
-            <NavLink to="/watch-later">
-              <FaClock /> {!collapsed && "Xem sau"}
+          <li className={styled["side-bar__menu-item"]}>
+            <NavLink to="/bus-manage" className={styled["side-bar__menu-link"]}>
+              <FaBus className={styled.icon} />
+              <span className={styled["side-bar__section-title"]}>Quản lý xe khách</span>
             </NavLink>
           </li>
-          <li>
-            <NavLink to="/liked">
-              <FaHeart /> {!collapsed && "Video đã thích"}
+          <li className={styled["side-bar__menu-item"]}>
+            <NavLink to="/trip-manage" className={styled["side-bar__menu-link"]}>
+              <FaBus className={styled.icon} />
+              <span className={styled["side-bar__section-title"]}>Quản lý chuyến đi</span>
+            </NavLink>
+          </li>
+          <li className={styled["side-bar__menu-item"]}>
+            <NavLink to="/promotion-manage" className={styled["side-bar__menu-link"]}>
+              <FaTicketAlt className={styled.icon} />
+              <span className={styled["side-bar__section-title"]}>Quản khuyến mãi</span>
+            </NavLink>
+          </li>
+          <li className={styled["side-bar__menu-item"]}>
+            <NavLink to="/ticket-manage" className={styled["side-bar__menu-link"]}>
+              <FaTicketAlt className={styled.icon} />
+              <span className={styled["side-bar__section-title"]}>Quản lý vé</span>
             </NavLink>
           </li>
         </ul>
       </nav>
-
-      <div className={styles.bottomSection}>
-        <button onClick={toggleTheme} className="btn btn-dark w-100">
-          {theme ? "🌞 Light Mode" : "🌙 Dark Mode"}
-        </button>
-      </div>
     </div>
   );
 };

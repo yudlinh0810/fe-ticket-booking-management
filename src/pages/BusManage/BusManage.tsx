@@ -68,8 +68,8 @@ const BusManage: React.FC = () => {
     });
   };
 
-  const handleRedirectDetail = (id: number) => {
-    navigate(`${urlMain}/detail/${id}`);
+  const handleRedirectDetail = (licensePlate: string) => {
+    navigate(`${urlMain}/detail/${licensePlate}`);
   };
 
   useEffect(() => {
@@ -142,7 +142,7 @@ const BusManage: React.FC = () => {
               <tr key={index}>
                 <td
                   className={styles["user-id"]}
-                  onClick={() => car.id && handleRedirectDetail(car.id)}
+                  onClick={() => car.licensePlate && handleRedirectDetail(car.licensePlate)}
                 >
                   {index + 1 + currentPage * ITEMS_PER_PAGE}
                 </td>
