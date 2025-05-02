@@ -2,7 +2,7 @@ import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { FaBars, FaBus, FaHome, FaTicketAlt, FaUsers, FaUserTie } from "react-icons/fa";
 import { RiAdminFill, RiUserStarFill } from "react-icons/ri";
-import styled from "../styles/Sidebar.module.scss";
+import styled from "../styles/sidebar.module.scss";
 import { useLocation } from "react-router";
 
 const Sidebar = () => {
