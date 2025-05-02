@@ -7,7 +7,7 @@ import { useLocation } from "react-router";
 
 const Sidebar = () => {
   const location = useLocation();
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
 
   const handleToggleSidebar = () => {
     setCollapsed(!collapsed);
