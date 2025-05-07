@@ -2,17 +2,20 @@ import { useQuery } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
 import { GoTriangleDown } from "react-icons/go";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import FilterCheckbox from "../../components/FilterCheckbox";
 import Loading from "../../components/Loading";
 import Pagination from "../../components/Pagination";
-import styles from "../../styles/busManage.module.scss";
+import SearchInput from "../../components/SearchInput";
+import SelectType from "../../components/SelectType";
+import { getPromotionList } from "../../services/promotion.service";
+import styles from "../../styles/promotionManage.module.scss";
 import { ArrangeType } from "../../types/type";
-import DefaultImage from "../../components/DefaultImage";
 import { debounce } from "../../utils/debounce.util";
-import { getBusList } from "../../services/bus.service";
+import formatCurrency from "../../utils/formatCurrency";
 
-const ITEMS_PER_PAGE = 5;
+const ITEMS_PER_PAGE = 2;
 
-const BusManage: React.FC = () => {
+const PromotionManage: React.FC = () => {
   const navigate = useNavigate();
   const { page } = useParams<{ page?: string }>();
   const location = useLocation();
@@ -20,60 +23,73 @@ const BusManage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<number>(
     page ? Math.max(1, parseInt(page, 10)) - 1 : 0
   );
-  const [searchLicensePlateValue, setSearchLicensePlateValue] = useState<string>("");
-  const [selectedType, setSelectedType] = useState<"xe-thuong" | "xe-giuong-nam" | "all">("all");
+  const [searchCodeValue, setSearchCodeValue] = useState<string>("");
+  const [selectedType, setSelectedType] = useState<"all" | "percentage" | "fixed">("all");
+  const [selectedCarTypes, setSelectedCarTypes] = useState<string[]>([]); // Đã thêm state cho car_type
 
-  const urlMain = "/bus-manage";
+  const urlMain = "/promotion-manage";
 
-  // Khi URL thay đổi, cập nhật currentPage
   useEffect(() => {
     const pageNum = page ? Math.max(1, parseInt(page, 10)) - 1 : 0;
     setCurrentPage(pageNum);
   }, [location.pathname]);
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ["busList", currentPage, arrangeType, searchLicensePlateValue, selectedType],
+    queryKey: [
+      "promotionList",
+      currentPage,
+      arrangeType,
+      searchCodeValue,
+      selectedType,
+      selectedCarTypes,
+    ],
     queryFn: () =>
-      getBusList({
+      getPromotionList({
         offset: currentPage * ITEMS_PER_PAGE,
         limit: ITEMS_PER_PAGE,
-        arrangeType: arrangeType,
-        licensePlateSearch: searchLicensePlateValue,
+        arrangeType,
+        codeSearch: searchCodeValue,
         type: selectedType,
+        carTypes: selectedCarTypes, // Truyền selectedCarTypes vào API
       }),
     staleTime: 5 * 60 * 10,
     placeholderData: (previousData) => previousData,
   });
 
   const total = data?.total ?? 0;
-  const carsData = data?.data || [];
+  const promotions = data?.data || [];
 
   const toggleArrangeType = () => {
-    setArrangeType((prevArrangeType) => (prevArrangeType === "asc" ? "desc" : "asc"));
+    setArrangeType((prev) => (prev === "asc" ? "desc" : "asc"));
   };
 
   const handleChangeValueSearch = debounce((e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchLicensePlateValue(e.target.value);
+    setSearchCodeValue(e.target.value);
   }, 200);
 
-  const handleSelectedTypeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedType(e.target.value as "all" | "xe-thuong" | "xe-giuong-nam");
+  const handleSelectedTypeChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    setSelectedType(e.target.value as "all" | "percentage" | "fixed");
+  };
+
+  const handleCarTypeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value, checked } = e.target;
+    setSelectedCarTypes((prev) => (checked ? [...prev, value] : prev.filter((t) => t !== value)));
   };
 
   const handlePageClick = (selectedItem: { selected: number }) => {
     const newPage = selectedItem.selected + 1;
-    setCurrentPage(selectedItem.selected); // Cập nhật state ngay lập tức
-    navigate(newPage > 1 ? `/bus-manage/page/${newPage}` : `/bus-manage`, {
+    setCurrentPage(selectedItem.selected);
+    navigate(newPage > 1 ? `${urlMain}/page/${newPage}` : `${urlMain}`, {
       replace: true,
     });
   };
 
-  const handleRedirectDetail = (licensePlate: string) => {
-    navigate(`${urlMain}/detail/${licensePlate}`);
+  const handleRedirectDetail = (id: number) => {
+    navigate(`${urlMain}/detail/${id}`);
   };
 
   useEffect(() => {
-    window.scrollTo(0, 0); // Scroll lên đầu khi chuyển trang
+    window.scrollTo(0, 0);
   }, [data]);
 
   if (isLoading) return <Loading />;
@@ -82,21 +98,21 @@ const BusManage: React.FC = () => {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <div className={styles.search}>
-          <input
-            type="text"
-            placeholder="Tìm kiếm..."
-            className={styles["search-input"]}
-            onChange={handleChangeValueSearch}
-          />
-        </div>
-        <div className={`${"filter-type"} ${styles["type-list"]}`}>
-          {["all", "xe-thuong", "xe-giuong-nam"].map((type) => (
+        <SearchInput placeholder="Tìm kiếm theo mã" onChange={handleChangeValueSearch} />
+        <Link to={`${urlMain}/add`} className={styles["btn-add"]}>
+          Thêm khuyến mãi
+        </Link>
+      </div>
+
+      <div className={styles["filter-wrapper"]}>
+        {/* <div className={styles["filter-type"]}>
+          <p className={styles["type-title"]}>Kiểu khuyến mãi</p>
+          {["all", "percentage", "fixed"].map((type) => (
             <div key={type} className={styles["type-item"]}>
               <div className={styles.radio}>
                 <input
                   type="radio"
-                  name="bus_type"
+                  name="promotion_type"
                   id={type}
                   value={type}
                   onChange={handleSelectedTypeChange}
@@ -105,16 +121,21 @@ const BusManage: React.FC = () => {
               </div>
               <div className={styles.label}>
                 <label htmlFor={type}>
-                  {type === "all" ? "Tất cả" : type === "xe-thuong" ? "Xe thường" : "Xe giường nằm"}
+                  {type === "all" ? "Tất cả" : type === "percentage" ? "Phần trăm" : "Giá cố định"}
                 </label>
               </div>
             </div>
           ))}
-        </div>
-        <Link to={"/bus-manage/add"} className={styles["btn-add"]}>
-          Thêm xe khách
-        </Link>
+        </div> */}
+        <SelectType selectedType={selectedType} onChange={handleSelectedTypeChange} />
+        <FilterCheckbox
+          title="Loại xe"
+          types={["xe thường", "xe giường nằm"]}
+          selectedTypes={selectedCarTypes}
+          onChange={handleCarTypeChange}
+        />
       </div>
+
       <div className={styles["table-wrapper"]}>
         <table className={styles.table}>
           <thead>
@@ -130,38 +151,37 @@ const BusManage: React.FC = () => {
                   />
                 </div>
               </th>
-              <th>Hình ảnh</th>
-              <th>Biển số xe</th>
-              <th>Sức chứa</th>
-              <th>Loại xe</th>
+              <th>Mã KM</th>
+              <th>Giảm giá</th>
+              <th>Kiểu</th>
+              <th>Mô tả</th>
               <th>Thao Tác</th>
             </tr>
           </thead>
           <tbody>
-            {carsData.map((car, index) => (
-              <tr key={index}>
-                <td
-                  className={styles["user-id"]}
-                  onClick={() => car.licensePlate && handleRedirectDetail(car.licensePlate)}
-                >
+            {promotions.map((promo, index) => (
+              <tr key={promo.id}>
+                <td onClick={() => handleRedirectDetail(promo.id)}>
                   {index + 1 + currentPage * ITEMS_PER_PAGE}
                 </td>
+                <td>{promo.code}</td>
                 <td>
-                  <DefaultImage src={car.image.urlImg} />
+                  {promo.type === "percentage"
+                    ? `${promo.discountAmount}%`
+                    : `${formatCurrency(promo.discountAmount)}`}
                 </td>
-                <td>{car.licensePlate}</td>
-                <td>{car.capacity ? `${car.capacity} chỗ` : "N/A"} </td>
-                <td>{car.type}</td>
+                <td>{promo.type === "percentage" ? "Phần trăm" : "Giá cố định"}</td>
+                <td>{promo.description || "Không có mô tả"}</td>
                 <td>
-                  <div className={styles["btn-list"]}>
+                  <div className={styles["actions"]}>
                     <Link
-                      to={`${urlMain}/detail/${car.licensePlate}`}
+                      to={`${urlMain}/detail/${promo.id}`}
                       className={`${styles["btn-detail"]} ${styles.btn}`}
                     >
                       Chi tiết
                     </Link>
                     <Link
-                      to={`${urlMain}/update/${car.licensePlate}`}
+                      to={`${urlMain}/update/${promo.id}`}
                       className={`${styles["btn-edit"]} ${styles.btn}`}
                     >
                       Cập nhật
@@ -186,4 +206,4 @@ const BusManage: React.FC = () => {
   );
 };
 
-export default BusManage;
+export default PromotionManage;

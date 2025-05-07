@@ -94,9 +94,10 @@
       background-color: var(--white);
 
       .group {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
         .title {
-          margin-bottom: 0.6rem;
-
           text-transform: capitalize;
           font-size: 1.15rem;
           font-weight: 500;

@@ -33,6 +33,12 @@ import "./styles/app.scss";
 import "./styles/reset.scss";
 import "./styles/root.scss";
 import { handleTokenExpiration } from "./utils/handleTokenExpiration ";
+import DetailTrip from "./pages/TripManage/DetailTrip";
+import UpdateTrip from "./pages/TripManage/UpdateTrip";
+import ManagePromotion from "./pages/PromotionManage/ManagePromotion";
+import AddPromotion from "./pages/PromotionManage/AddPromotion";
+import DetailPromotion from "./pages/PromotionManage/DetailPromotion";
+import UpdatePromotion from "./pages/PromotionManage/UpdatePromotion";
 
 function App() {
   useClientWidth();
@@ -55,7 +61,6 @@ function App() {
         <Layout>
           <Routes>
             <Route path="/login" element={<Login />} />
-
             {/* Route bảo vệ */}
             <Route element={<PrivateRoute />}>
               <Route index element={<div>Home</div>} />
@@ -108,7 +113,19 @@ function App() {
               {/* Trip Manage */}
               <Route path="/trip-manage" element={<ManageLayout />}>
                 <Route index element={<TripManage />} />
+                <Route path="page/:page" element={<TripManage />} />
                 <Route path="add" element={<AddTrip />} />
+                <Route path="detail/:id" element={<DetailTrip />} />
+                <Route path="update/:id" element={<UpdateTrip />} />
+              </Route>
+
+              {/* Promotion */}
+              <Route path="/promotion-manage" element={<ManageLayout />}>
+                <Route index element={<ManagePromotion />} />
+                <Route path="page/:page" element={<ManagePromotion />} />
+                <Route path="add" element={<AddPromotion />} />
+                <Route path="detail/:id" element={<DetailPromotion />} />
+                <Route path="update/:id" element={<UpdatePromotion />} />
               </Route>
             </Route>
           </Routes>

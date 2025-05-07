@@ -2,6 +2,7 @@ import { useState } from "react";
 import { login } from "../services/user.service";
 import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
+import styled from "../styles/login.module.scss";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -32,7 +33,7 @@ const Login = () => {
   };
 
   return (
-    <div>
+    <div className={styled["login-container"]}>
       <form onSubmit={handleLogin}>
         <div className="ul">
           <label htmlFor="email">Email:</label>

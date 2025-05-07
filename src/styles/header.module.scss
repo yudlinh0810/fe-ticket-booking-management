@@ -4,7 +4,11 @@
   display: flex;
   justify-content: space-between;
 
-  padding: 1rem;
+  .actions {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+  }
 
   .action__show-side-bar {
     @include mix.responsive(desktop) {

@@ -11,7 +11,7 @@ import { fetchDriver, updateInfoDriver } from "../../services/driver.service";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
-const UpdateDriver = () => {
+const UpdateTrip = () => {
   const { id } = useParams<{ id: string }>();
   const idFetch = id ?? "0";
   const dateBirthRef = useRef<HTMLInputElement>(null);
@@ -59,7 +59,7 @@ const UpdateDriver = () => {
     });
   };
 
-  const handleUpdateDriver = async () => {
+  const handleUpdateTrip = async () => {
     const { id, ...data } = form;
     if (id) {
       await updateMutate.mutateAsync({ id: Number(id), data });
@@ -121,7 +121,7 @@ const UpdateDriver = () => {
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          handleUpdateDriver();
+          handleUpdateTrip();
         }}
         className={styles.update}
       >
@@ -272,4 +272,4 @@ const UpdateDriver = () => {
   );
 };
 
-export default UpdateDriver;
+export default UpdateTrip;

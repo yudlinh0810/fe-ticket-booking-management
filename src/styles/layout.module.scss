@@ -18,9 +18,14 @@
 }
 
 .header {
+  z-index: 10;
+  position: fixed;
+
+  width: 100%;
+  padding: 1.2rem;
+
   background-color: rgb(46, 180, 252);
   color: #000;
-  padding: 1.2rem;
 }
 
 .main {

@@ -28,14 +28,16 @@ const Header = () => {
 
   return (
     <div className={styled["container-header"]}>
-      <div className="">YudLinBus</div>
-      <div className={styled["action__show-side-bar"]}>
-        <FaBars
-          onMouseDown={(e) => {
-            e.stopPropagation();
-            handleToggleSideBar();
-          }}
-        />
+      <div className={styled.actions}>
+        <div className="">YudLinBus</div>
+        <div className={styled["action__show-side-bar"]}>
+          <FaBars
+            onMouseDown={(e) => {
+              e.stopPropagation();
+              handleToggleSideBar();
+            }}
+          />
+        </div>
       </div>
       {/*  */}
       {!collapsed && <div className={styled["overlay"]} />}
