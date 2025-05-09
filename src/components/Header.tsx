@@ -3,6 +3,8 @@ import styled from "../styles/header.module.scss";
 import { FaBars, FaBus, FaHome, FaTicketAlt, FaUsers, FaUserTie } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
 import { RiAdminFill, RiUserStarFill } from "react-icons/ri";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 
 const Header = () => {
   const [collapsed, setCollapsed] = useState<boolean>(true);
@@ -111,6 +113,9 @@ const Header = () => {
                 <FaTicketAlt className={styled.icon} />
                 <span className={styled["side-bar-mobile__section-title"]}>Quản lý vé</span>
               </NavLink>
+            </li>
+            <li className={`${styled["side-bar-mobile__menu-item"]} ${styled["action-logout"]}`}>
+              <FontAwesomeIcon icon={faRightFromBracket} className={styled["ic-default"]} />
             </li>
           </ul>
         </nav>

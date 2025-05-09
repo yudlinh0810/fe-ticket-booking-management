@@ -41,7 +41,7 @@ const BusManage: React.FC = () => {
         licensePlateSearch: searchLicensePlateValue,
         type: selectedType,
       }),
-    staleTime: 5 * 60 * 10,
+    staleTime: 5 * 60 * 1000,
     placeholderData: (previousData) => previousData,
   });
 

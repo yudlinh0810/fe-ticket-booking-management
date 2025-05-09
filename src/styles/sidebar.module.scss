@@ -121,3 +121,34 @@
     display: none;
   }
 }
+
+.ic-wrapper {
+  position: relative;
+
+  .ic-default,
+  .ic-hover {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    cursor: pointer;
+
+    transition: opacity 0.2s ease;
+  }
+
+  .ic-hover {
+    opacity: 0;
+  }
+
+  &:hover {
+    .ic-default {
+      opacity: 0;
+    }
+
+    .ic-hover {
+      opacity: 1;
+      color: var(--primary);
+    }
+  }
+}
